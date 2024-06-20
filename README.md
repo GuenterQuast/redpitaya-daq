@@ -9,7 +9,7 @@ The RedPitaya is a small, credit-card sized single board computer with a dual-co
 and a XILINX Zynq 7010 FPGA. The board contains two fast ADCs and two DACs with 14 bit resolution running
 at a sampling frequency of 125 MHz. Extension connectors provide general purpose IO pins with
 slow analog inputs and outputs and support for serial bus interfaces like I²C, SPI and UART. 
-The system runs under Ubuntu Linux, which provides network access and supports a wide range of
+The system runs under Linux, which provides network access and supports a wide range of
 applications running on the board. 
 
 Many laboratory instruments like oscilloscopes, logic analyzers, Bode plotters or a multi-channel
@@ -18,10 +18,11 @@ Linux application.
 
 ![Image of the RedPitaya board (source: `redpitaya.com`).](images/RedPitayaBoard-1024x526.png){width=800px}
  
-The MCPHA application for the RedPitaya by Pavel Demin provides a multi-channel pulse-height analyzer as
-well as an oscilloscope capable of transferring large data reates reaching the theoretical
-limit of the 1 Gb port. The package consists of an FPGA image and a server process running on the
-RedPitaya board. A client script controls the server and pulls the data to the client computer.
+The MCPHA application for the RedPitaya by Pavel Demin provides a multi-channel pulse-height analyzer
+as well as an oscilloscope capable of transferring large data rates reaching the theoretical
+limit of the 1 Gb ethernet port. The package consists of an FPGA image and a server process running
+on the RedPitaya board. A client script controls the server and pulls the data to the client
+computer.
 
 This package extends the original client by a possibility to record or export waveform data and
 provides helper scripts to read and analyze the data. An interface to the buffer manager *mimoCoRB*
