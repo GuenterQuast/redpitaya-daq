@@ -7,8 +7,8 @@ for physics laboratory courses
 
 The RedPitaya is a small, credit-card sized single board computer with a dual-core ARM Cortex-A processor 
 and a XILINX Zynq 7010 FPGA. The board contains two fast ADCs and two DACs with 14 bit resolution running
-at a sampling frequency of 125 MHz. Extension connectors provide general purpose IO pins with
-slow analog inputs and outputs and support for serial bus interfaces like I²C, SPI and UART. 
+at a sampling frequency of 125 MHz. Extension connectors provide general purpose IO pins with slow analog
+inputs and outputs and support for serial bus interfaces like I²C, SPI and UART. 
 The system runs under Linux, which provides network access and supports a wide range of
 applications running on the board. 
 
@@ -20,16 +20,16 @@ Linux application.
  
 The MCPHA application for the RedPitaya by Pavel Demin provides a multi-channel pulse-height analyzer
 as well as an oscilloscope capable of transferring large data rates reaching the theoretical
-limit of the 1 Gb ethernet port. The package consists of an FPGA image and a server process running
-on the RedPitaya board. A client script controls the server and pulls the data to the client
+limit of the one-Gbit ethernet port. The package consists of an FPGA image and a server process
+running on the RedPitaya board. A client script controls the server and pulls the data to the client
 computer.
 
 This package extends the original client by a possibility to record or export waveform data and
-provides helper scripts to read and analyze the data. An interface to the buffer manager *mimoCoRB*
-for buffering and parallel processing of large date volumes is also provided.
+provides helper scripts to read back and analyze the recorded data. An interface to the buffer
+manager *mimoCoRB* for buffering and parallel processing of large date volumes is also provided.
 
 This package is in use for gamma-ray spectroscopy experiments in physics laboratory courses at
-the faculty of physics at Karlsruhe Institute of Technology.
+the Faculty of Physics at Karlsruhe Institute of Technology.
 
 
 ### Files:
@@ -56,10 +56,14 @@ the faculty of physics at Karlsruhe Institute of Technology.
 
 ## Credit:
 
-*mcpha.py* is a fork of the sub-directory *projects/mcpha* in a project by
-Pavel Demin, [red-pitaya-notes](https://pavel-demin.github.io/red-pitaya-notes).  
-*redPdaq.py* represents an extension of the oscilloscope class enabling fast restart
+The code prvided here is abased on a fork of the sub-directory *projects/mcpha* in
+a project by Pavel Demin, [red-pitaya-notes](https://pavel-demin.github.io/red-pitaya-notes).  
+*redPdaq.py* is an extension of the original oscilloscope class enabling fast restart
 and data export.  
+
+# Users' Guide
+This section presents a brief introduction on the basic usage of the funcionality provided
+by the *rediptaya-daq* package.
 
 
 ## Multi-Channel Pulse-Height Analyzer and Data recorder for the RedPitaya FPGA board
@@ -71,16 +75,16 @@ of the RedPitaya communicates with a client process via network. The client comm
 the server, starts and stops data recording and receives and displays the data. The client is
 also responsible for saving data to files. 
 
-The original version by Pavel Demin has been modified to better meet the usual standards for graphics
-displays in physics. A command line interface has also been added to allow easy control of important
-parameters at program start. An extended  version of the original oscilloscope display permits
-fast transfer of data to the client for data acquisition applications.
+The original version by Pavel Demin has been modified to better meet the usual standards for
+graphics displays in physics. A command line interface has also been added to allow easy control
+of important parameters at program start. An extended  version of the original oscilloscope
+display permits fast transfer of data to the client for data acquisition applications.
 
 
 ### Basic functionality 
 
 The algorithm implemented in the FPGA  uses a rather simple, but straight-forward algorithm to
-determine the height of pulses.  When the signal voltage of a supplied input signal starts rising,
+determine the pulse-heights.  When the signal voltage of a supplied input signal starts rising,
 the corresponding  ADC count is stored. A second ADC value is stored when the signal level starts
 falling again, and the difference of these two ADC values is histogrammed. The histogram is
 transferred to the client upon request. 
@@ -118,33 +122,34 @@ of the *matplotlib* window to mark regions to zoom in for a detailed inspection 
 ## Oscilloscope and data recorder
 
 The original oscilloscpe display is extended by a "*Start DAQ*" button to run the oscilloscope in
-data acquisition mode, i.e. continuously. A subset of the data is shown in the oscilloscope display,
-together with information on the trigger rate and the transferred data volume. A configurable
+data acquisition mode, i.e. continuously. Only a subset of the data is shown in the oscilloscope
+display, together with information on the trigger rate and the transferred data volume. A configurable
 user-defined function may also be called to analyse and store the recorded waveforms. 
-It is possible to transfer data over a one-Gbit network from the RedPitaya with a rate of 50 MB/s
-or about 500 waveforms/s.
+It is possible to transfer data over a one-Gbit network from the RedPitaya with a rate of up
+to 50 MB/s or about 500 waveforms/s.
 
 An examples of call-back functions callable from within redPdaq is provided with the package
 
   - redP_consumer()            
-      calculates and displays statistics on trigger rate and data volume
+      calculates and displays statistics on trigger rate and data volume.
 
 
 ### Running redPdaq as a mimoCoRB client  
 
-*redP_mimocorb.py* is script containing code to be started from the command line and
-a function, *redP_to_rb*, called as a sub-process within the *mimiCoRB* frame-work
-for more advanced data analysis tasks requiring multiple processes running in parallel.
+*redP_mimocorb.py* is a script containing code to be started from the command line and
+a function definde in the script, *redP_to_rb*, is called as a sub-process within the
+*mimiCoRB* buffer manager frame-work for more advanced data analysis tasks requiring
+multiple processes running in parallel.
 A *mimoCoRB* setup-file is also provided and can be started by typing
 `redP_mimoCoRB.py setup.yaml` on the command line. Modules and configuration
 files for a pulse-height analysis of recorded signals are contained as exampless
 in the sub-directories *modules/* and *config/*, respectively.
 
 
-## Installation
+# Installation of the Package
 
-The sub-directory *RP-image* contains files to be transferred to a SD card for the RedPitaya board.
-Proceed as follows:
+The sub-directory *RP-image* contains the necessary files to be transferred to a SD card
+for the RedPitaya board. Proceed as follows:
 
   - copy the contents of the directory *RP-image* to an empty SD card formatted as VFAT32;
   - connect the RedPitaya to the network via the LAN port; 
@@ -155,12 +160,13 @@ and waits for the client program to connect via network.
 
 On the client computer, download the client software:  
 
-  - clone the *redpitaya-mcpha* repository via `git clone https://gitlab.kit.edu/guenter.quast/redpitaya-daq`;
+  - clone the *redpitaya-daq* repository via `git clone https://gitlab.kit.edu/guenter.quast/redpitaya-daq`;
   - change directory to the installation directory and start the application program *redPdaq.py*
 
-This client program takes care of initializing the processes on the RedPitaya board through the
-server process, initiates data transfers from the RedPitaya board to the client computer and provides
-several tabs to visualize data, generate test pulses and to store the acquired spectra. 
+This client program takes care of initializing the processes on the RedPitaya board through
+the server, initiates data transfers from the RedPitaya board to the client computer and
+provides several tabs to visualize data, generate test pulses and to store the acquired spectra
+or waveforms. 
 
 
 ### Network connection to the RedPitaya Board
@@ -172,7 +178,7 @@ where *xxxxxx* are the last six characters of the ethernet MAC address.
 If a usb-to-ethernet adapter is used and a dhcp server on the client computer is enabled for the
 interface, a one-to-one connection of the RedPitaya to a host computer can easily be established;
 use the name *rp-xxxxxx.local* in this case. How to set up a *dhcp* server for a usb-to-ethernet
-adapter depends on the operating system used on the client; please check the relevant 
+adapter depends on the operating system used on the client computer; please check the relevant 
 documentation for your system. 
 
 
@@ -235,7 +241,7 @@ Note that presently mcpha.py exports data in human-readable format using
 
 ## Examples
 
-The directory *examples/* contains some spectra recorded with *mchph.py* and the Python
+The directory *examples/* contains some spectra recorded with *redPdaq.py* and the Python
 program *peakFitter.py* to find and precisely fit peaks in recorded spectra. An example is
 shown here:
 
