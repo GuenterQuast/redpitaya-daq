@@ -1,11 +1,13 @@
 <h1 id="redpitaya-daq">redpitaya-daq</h1>
+
 <p>Data acuisition for the <a href="https://redpitaya.com/de/">RedPitaya FPGA board</a> for physics laboratory courses</p>
+
+<p><a href="https://github.com/GuenterQuast/redpitaya-daq"> Link to repository</a> </p>
+
 <h2 id="overview">Overview</h2>
 <p>The RedPitaya is a small, credit-card sized single board computer with a dual-core ARM Cortex-A processor and a XILINX Zynq 7010 FPGA. The board contains two fast ADCs and two DACs with 14 bit resolution running at a sampling frequency of 125 MHz. Extension connectors provide general purpose IO pins with slow analog inputs and outputs and support for serial bus interfaces like I²C, SPI and UART. The system runs under Linux, which provides network access and supports a wide range of applications running on the board.</p>
 <p>Many laboratory instruments like oscilloscopes, logic analyzers, Bode plotters or a multi-channel pulse-height analyzer can be realized on this board by simply changing the FPGA image and the Linux application.</p>
-<figure>
-<img src="images/RedPitayaBoard-1024x526.png" width="800" alt="" /><figcaption>Image of the RedPitaya board (source: <code>redpitaya.com</code>).</figcaption>
-</figure>
+
 <p>The MCPHA application for the RedPitaya by Pavel Demin provides a multi-channel pulse-height analyzer as well as an oscilloscope capable of transferring large data rates reaching the theoretical limit of the one-Gbit ethernet port. The package consists of an FPGA image and a server process running on the RedPitaya board. A client script controls the server and pulls the data to the client computer.</p>
 <p>This package extends the original client by a possibility to record or export waveform data and provides helper scripts to read back and analyze the recorded data. An interface to the buffer manager <em>mimoCoRB</em> for buffering and parallel processing of large date volumes is also provided.</p>
 <p>This package is in use for gamma-ray spectroscopy experiments in physics laboratory courses at the Faculty of Physics at Karlsruhe Institute of Technology.</p>

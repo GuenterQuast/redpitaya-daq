@@ -55,7 +55,7 @@ the Faculty of Physics at Karlsruhe Institute of Technology.
 
 ## Credit:
 
-The code prvided here is based on a fork of the sub-directory *projects/mcpha* in
+The code provided here is based on a fork of the sub-directory *projects/mcpha* in
 a project by Pavel Demin, [red-pitaya-notes](https://pavel-demin.github.io/red-pitaya-notes).  
 *redPdaq.py* contains an extension of the original oscilloscope class enabling fast restart
 and data export.  
