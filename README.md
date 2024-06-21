@@ -60,9 +60,10 @@ a project by Pavel Demin, [red-pitaya-notes](https://pavel-demin.github.io/red-p
 *redPdaq.py* contains an extension of the original oscilloscope class enabling fast restart
 and data export.  
 
+
 # Users' Guide
 
-This section presents a brief introduction on the basic usage of the funcionality provided
+This section presents a brief introduction to the basic usage of the funcionality provided
 by the *rediptaya-daq* package.
 
 
@@ -255,5 +256,5 @@ Like the original code by Pavel Demin, this open-source code is provided under t
 
 ## Project status
 
-This project has been developed for experiments in the physics lab courses at the Faculty of Physics  
- at Karlsruhe Institute of Technology. The code is already public, but presently still under test. 
+This project has been developed for experiments in the physics lab courses at the Faculty of Physics
+at Karlsruhe Institute of Technology. The code is already public, but presently still under test. 
