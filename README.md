@@ -57,8 +57,8 @@ the faculty of physics at Karlsruhe Institute of Technology.
 ## Credit:
 
 *mcpha.py* is a fork of the sub-directory *projects/mcpha* in a project by
-Pavel Demin, [red-pitaya-notes](https://pavel-demin.github.io/red-pitaya-notes),
-*redPaq.py* represents an extension of the oscilloscope class enabling fast restart
+Pavel Demin, [red-pitaya-notes](https://pavel-demin.github.io/red-pitaya-notes).  
+*redPdaq.py* represents an extension of the oscilloscope class enabling fast restart
 and data export.  
 
 
@@ -112,7 +112,7 @@ to a single detected pulse.
 
 Note that spectra and waveforms are plotted with a very large number of channels, well exceeding
 the resolution of a computer display. It is therefore possible to use the looking-glass button
-of the *matplotlib*window to mark regions to zoom in for a detailed inspection of the data. 
+of the *matplotlib* window to mark regions to zoom in for a detailed inspection of the data. 
 
 
 ## Oscilloscope and data recorder
