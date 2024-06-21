@@ -42,26 +42,26 @@ the Faculty of Physics at Karlsruhe Institute of Technology.
   - *redP_mimocorb.py*  runs *redPdaq* as a client of the buffer manager *mimoCoRB*
   - *setup.yaml*        coniguration script defining the *mimoCoRB* application
   - *modules/* and *config/* contain code and configuration files for the *redP_mimoCoRB* application
-  - *rpControl.ui*      qt5 tab for *redPosci* application   
+  - *rpControl.ui*      main qt5 window for *redPdaq*   
+  - *mcpha_log.ui*      qt5 tab for message display
+  - *mcpha_hst.ui*      qt5 tab for histogram display 
   - *mcpha_daq.ui*      qt5 tab for oscilloscope with daq mode
   - *mcpha_gen.ui*      qt5 tab for generator 
-  - *mcpha_osc.ui*      qt5 tab for oscilloscope
-  - *mcpha_hst.ui*      qt5 tab for histogram display 
-  - *mcpha_log.ui*      qt5 tab for message display
-  - RP-image  directory with all files necessary to boot a RedPitaya and start the server
-    application based on the "small, simple and secure" linux distribution
+  - *RP-image/*         directory with all files necessary to boot a RedPitaya and start the server
+                        application based on the "small, simple and secure" linux distribution
     [alpine-3.18-armv7-20240204](https://github.com/pavel-demin/red-pitaya-notes/releases/tag/20240204) 
   - utility scripts in the sub-directory *helpers/*
 
 
 ## Credit:
 
-The code prvided here is abased on a fork of the sub-directory *projects/mcpha* in
+The code prvided here is based on a fork of the sub-directory *projects/mcpha* in
 a project by Pavel Demin, [red-pitaya-notes](https://pavel-demin.github.io/red-pitaya-notes).  
-*redPdaq.py* is an extension of the original oscilloscope class enabling fast restart
+*redPdaq.py* contains an extension of the original oscilloscope class enabling fast restart
 and data export.  
 
 # Users' Guide
+
 This section presents a brief introduction on the basic usage of the funcionality provided
 by the *rediptaya-daq* package.
 
