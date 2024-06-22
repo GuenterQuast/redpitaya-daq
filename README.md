@@ -1,6 +1,6 @@
 # redpitaya-daq
 
-Data acuisition for the [RedPitaya FPGA board](https://redpitaya.com/de/)
+Data acquisition for the [RedPitaya FPGA board](https://redpitaya.com/de/)
 for physics laboratory courses 
 
 ## Overview
