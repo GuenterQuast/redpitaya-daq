@@ -16,7 +16,9 @@ Many laboratory instruments like oscilloscopes, logic analyzers, Bode plotters o
 pulse-height analyzer can be realized on this board by simply changing the FPGA image and the
 Linux application. 
 
-![Image of the RedPitaya board (source: `redpitaya.com`).](images/RedPitayaBoard-1024x526.png){width=800px}
+![Image of the RedPitaya board (source: `redpitaya.com`).](
+https://redpitaya.com/wp-content/uploads/2023/02/Red_Pitaya_-_Skica_vectors_-za-letak_transparent-1024x644.png
+){width=800px}
  
 The MCPHA application for the RedPitaya by Pavel Demin provides a multi-channel pulse-height analyzer
 as well as an oscilloscope capable of transferring large data rates reaching the theoretical
