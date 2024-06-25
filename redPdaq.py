@@ -80,7 +80,7 @@ pref_style = "default"
 _style = pref_style if pref_style in plt.style.available else "default"
 plt.style.use(_style)
     
-Ui_MCPHA, QMainWindow = loadUiType("rpControl.ui")
+Ui_RPCONTROL, QMainWindow = loadUiType("rpControl.ui")
 Ui_LogDisplay, QWidget = loadUiType("mcpha_log.ui")
 Ui_HstDisplay, QWidget = loadUiType("mcpha_hst.ui")
 Ui_OscDisplay, QWidget = loadUiType("mcpha_daq.ui")
@@ -92,7 +92,7 @@ else:
     path = os.path.expanduser("~")
 
 
-class rpControl(QMainWindow, Ui_MCPHA):
+class rpControl(QMainWindow, Ui_RPCONTROL):
     """ control Pavel Demin's MCHPA application on RedPitaya
 
         Modes of operation:
@@ -128,6 +128,7 @@ class rpControl(QMainWindow, Ui_MCPHA):
          
         # set physical units (for axis labels)
         self.get_physical_units()
+        # set-up and show main window
         self.setupUi(self)
         # initialize variables
         self.idle = True
@@ -144,8 +145,12 @@ class rpControl(QMainWindow, Ui_MCPHA):
             self.hst1 = HstDisplay(self, self.log, 0)
             self.hst2 = HstDisplay(self, self.log, 1)
         else:
+            # no spectrum
             self.hst1 = None
             self.hst2 = None
+            # smaller window
+            self.setWindowTitle("RedPitaya DAQ")
+            self.setGeometry(0, 0, 600, 450)
         self.osc_daq = OscDAQ(self, self.log)        
         self.gen = GenDisplay(self, self.log)
         self.tabindex_log = self.tabWidget.addTab(self.log, "Messages")
