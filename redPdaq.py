@@ -150,7 +150,8 @@ class rpControl(QMainWindow, Ui_RPCONTROL):
             self.hst2 = None
             # smaller window
             self.setWindowTitle("RedPitaya DAQ")
-            self.setGeometry(0, 0, 600, 450)
+            self.setGeometry(0, 0, 800, 600)
+            self.log.print("runnning in DAQ mode")
         self.osc_daq = OscDAQ(self, self.log)        
         self.gen = GenDisplay(self, self.log)
         self.tabindex_log = self.tabWidget.addTab(self.log, "Messages")
