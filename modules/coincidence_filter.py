@@ -56,6 +56,7 @@ def find_peaks(source_list=None, sink_list=None, observe_list=None, config_dict=
     trigger_channel = 'ch'+config_dict["trigger_channel"]
     coincidence_window = config_dict["coincidence_window"]
     list_of_channels = config_dict["list_of_channels"]
+    clipping_level = config_dict["clipping_level"]
     
     if trigger_channel not in list_of_channels:
         raise ValueError(f'{trigger_channel} not in list of channels: {list_of_channels}') 
@@ -95,6 +96,10 @@ def find_peaks(source_list=None, sink_list=None, observe_list=None, config_dict=
             Delta_T=coincidence_window[signal_channel]['offest_from_trigger']/sample_time_ns
             w=coincidence_window[signal_channel]['width_of_window']/sample_time_ns
             for peak in peaks[signal_channel]:
+                # filter out clipped peaks
+                if input_data[signal_channel][peak]>=clipping_level:
+                    return None
+                # check for coincidences
                 if -w/2<=peak-Delta_T-trigger_peak<=w/2:
                     # explanation: t+Delta_T-w/2<=peak<=t+Delta_T+w/2
                     """ab hier erstmal nur für einen trigger und einen signal channel"""
@@ -109,21 +114,7 @@ def find_peaks(source_list=None, sink_list=None, observe_list=None, config_dict=
     p_filter = rbTransfer(source_list=source_list, sink_list=sink_list, config_dict=config_dict,
                         ufunc=tag_pulses, **rb_info)
     p_filter()
-
-
-# def coincidence_filter(peaks,peaks_properties,trigger_channel,coincidence_window):
-#     possible_channels=peaks.dtype.names
-#     if trigger_channel not in possible_channels:
-#         raise IndexError(f"{trigger_channel} is not a valid channel. Given channels are {possible_channels}")
-#     if len(peaks[trigger_channel])!=1:
-#         # ToDo For now only interested in events where one trigger peak is found
-#         return None    
-#     coincidence_channels=[channel for channel in possible_channels if channel != trigger_channel]
-#     for channel in coincidence_channels:
-#         print("trash")
-        
-#     return None
-        
+       
         
         
 if __name__ == "__main__":
