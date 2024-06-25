@@ -14,9 +14,9 @@ general:
   trigger_channel: &trigger_channel '1'
   trigger_direction: &trigger_direction "rising" # or "falling"
   pre_trigger_samples: &pre_trigger_samples 103 # 5%
-  list_of_channels: 
-    - 'ch1'
-    - 'ch2'
+  #list_of_channels: 
+  #  - 'ch1'
+  #  - 'ch2'
 
 
 
@@ -45,18 +45,18 @@ find_peaks:
       width_of_window: 2000 # in ns
 
 # dict for spectrum_filter, function find_peaks
-find_peaks:
-  # signal_characteristics: 256ns/sample, duration 50µs ( ~200 samples)
-  sample_time_ns: *sample_time_ns
-  analogue_offset: *analogue_offset
-  number_of_samples: *number_of_samples
-  pre_trigger_samples: *pre_trigger_samples
-  peak_minimal_prominence: 200  # has to be positive and higher than avg. noise peaks to not cause havoc!
-  trigger_channel: *trigger_channel
-  peak_minimal_distance: 400  # minimal distance between two peaks in number of samples
-  peak_minimal_width: 100  # in number of samples
-  trigger_channel: *trigger_channel
-  trigger_position_tolerance: 20  # in number of samples
+#find_peaks:
+#  # signal_characteristics: 256ns/sample, duration 50µs ( ~200 samples)
+#  sample_time_ns: *sample_time_ns
+#  analogue_offset: *analogue_offset
+#  number_of_samples: *number_of_samples
+#  pre_trigger_samples: *pre_trigger_samples
+#  peak_minimal_prominence: 200  # has to be positive and higher than avg. noise peaks to not cause havoc!
+#  trigger_channel: *trigger_channel
+#  peak_minimal_distance: 400  # minimal distance between two peaks in number of samples
+#  peak_minimal_width: 100  # in number of samples
+#  trigger_channel: *trigger_channel
+#  trigger_position_tolerance: 20  # in number of samples
 
 # dict for RedPitaya redPoscdaq
 redP_to_rb:
