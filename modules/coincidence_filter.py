@@ -53,10 +53,9 @@ def find_peaks(source_list=None, sink_list=None, observe_list=None, config_dict=
     peak_minimal_distance = config_dict["peak_minimal_distance"]
     peak_minimal_width = config_dict["peak_minimal_width"]
     pre_trigger_samples = config_dict["pre_trigger_samples"]
-    trigger_channel = config_dict["trigger_channel"]
+    trigger_channel = 'ch'+config_dict["trigger_channel"]
     coincidence_window = config_dict["coincidence_window"]
     list_of_channels = config_dict["list_of_channels"]
-    
     
     if trigger_channel not in list_of_channels:
         raise ValueError(f'{trigger_channel} not in list of channels: {list_of_channels}') 

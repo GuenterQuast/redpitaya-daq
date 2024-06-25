@@ -9,15 +9,10 @@ general:
   sample_time_ns: &sample_time_ns 256 #  for decimation 4
   invert_channel1: &invert1 0 
   invert_channel2: &invert2 0
-
   trigger_level: &trigger_level 50
   trigger_channel: &trigger_channel '1'
   trigger_direction: &trigger_direction "rising" # or "falling"
   pre_trigger_samples: &pre_trigger_samples 103 # 5%
-  #list_of_channels: 
-  #  - 'ch1'
-  #  - 'ch2'
-
 
 
 # dict for coincidence_filters, function find_peaks
@@ -41,6 +36,10 @@ find_peaks:
     ch2:
       offest_from_trigger: 0 # in ns
       width_of_window: 2000 # in ns
+  list_of_channels:  
+    - 'ch1'
+    - 'ch2'
+
 
 
 # # dict for spectrum_filter, function find_peaks
