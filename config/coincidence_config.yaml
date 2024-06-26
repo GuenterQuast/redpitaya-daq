@@ -99,7 +99,7 @@ save_parquet:
   filename: "spectrum"
 
 plot_waveform:
-  title: "Muon waveform"
+  title: "Coincidence waveform"
   min_sleeptime: 0.5                # time to wait between graphics updates
   number_of_samples: *number_of_samples
   sample_time_ns: *sample_time_ns
