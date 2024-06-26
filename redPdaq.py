@@ -150,7 +150,7 @@ class rpControl(QMainWindow, Ui_RPCONTROL):
             self.hst2 = None
             # smaller window
             self.setWindowTitle("RedPitaya DAQ")
-            self.setGeometry(0, 0, 800, 600)
+            self.setGeometry(0, 0, 800, 650)
             self.log.print("runnning in DAQ mode")
         self.osc_daq = OscDAQ(self, self.log)        
         self.gen = GenDisplay(self, self.log)
@@ -1110,7 +1110,7 @@ class OscDAQ(QWidget, Ui_OscDisplay):
             self.Nprev = self.NTrig
             T_active = t - self.T0
             self.dT = 0.
-            status_txt = "active: {:.1f}s  trigger rate: {:.2f} Hz,  data rate: {:.4g} MB/s".format(T_active, r, r*self.l_tot*4e-6)
+            status_txt = "active: {:.0f}s  trigger rate: {:.0f} Hz,  data rate: {:.3g} MB/s".format(T_active, r, r*self.l_tot*4e-6)
             # print(status_txt, end='\r')
             self.osctxt.set_text(status_txt)
             # update graph on display
