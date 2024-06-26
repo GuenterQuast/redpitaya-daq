@@ -21,17 +21,25 @@ find_peaks:
   analogue_offset: *analogue_offset
   number_of_samples: *number_of_samples
   pre_trigger_samples: *pre_trigger_samples
-  peak_minimal_prominence:  # has to be positive and higher than avg. noise peaks to not cause havoc!
-    ch1: 200
-    ch2: 200
   trigger_channel: *trigger_channel
-  peak_minimal_distance: # minimal distance between two peaks in number of samples
-    ch1: 400
-    ch2: 400
-  peak_minimal_width: # in number of samples
-    ch1: 10
-    ch2: 10
   trigger_position_tolerance: 20  # in number of samples 
+
+  peak_config:
+    prominence:  # has to be positive and higher than avg. noise peaks to not cause havoc!
+      ch1: 200
+      ch2: 200
+    distance: # minimal distance between two peaks in number of samples
+      ch1: 400
+      ch2: 400
+    width: # in number of samples
+      ch1: 10
+      ch2: 10
+    gradient_bound: #range of the gradient in which it can be considered 0 (for calculating of basline)
+      upper: 0
+      lower: 0
+    
+
+  
   coincidence_window: 
     ch2:
       offest_from_trigger: 0 # in ns

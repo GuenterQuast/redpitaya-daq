@@ -49,14 +49,22 @@ def find_peaks(source_list=None, sink_list=None, observe_list=None, config_dict=
     sample_time_ns = config_dict["sample_time_ns"]
     number_of_samples = config_dict["number_of_samples"]
     analogue_offset = config_dict["analogue_offset"]*1000
-    peak_minimal_prominence = config_dict["peak_minimal_prominence"]
-    peak_minimal_distance = config_dict["peak_minimal_distance"]
-    peak_minimal_width = config_dict["peak_minimal_width"]
     pre_trigger_samples = config_dict["pre_trigger_samples"]
     trigger_channel = 'ch'+config_dict["trigger_channel"]
     coincidence_window = config_dict["coincidence_window"]
+    
+    
+    peak_minimal_prominence = config_dict["peak_minimal_prominence"]
+    peak_minimal_distance = config_dict["peak_minimal_distance"]
+    peak_minimal_width = config_dict["peak_minimal_width"]
+    peak_gradient_bound = config_dict["gradient_bound"]
+    
+    peak_config = config_dict["peak_config"]
+    
+    
     list_of_channels = config_dict["list_of_channels"]
     clipping_level = config_dict["clipping_level"]
+    
     
     if trigger_channel not in list_of_channels:
         raise ValueError(f'{trigger_channel} not in list of channels: {list_of_channels}') 
@@ -67,6 +75,8 @@ def find_peaks(source_list=None, sink_list=None, observe_list=None, config_dict=
 
     pulse_par_dtype = sink_list[-1]['dtype']
 
+    
+    
     
     def tag_pulses(input_data):   
         """find all valid pulses 
@@ -80,9 +90,11 @@ def find_peaks(source_list=None, sink_list=None, observe_list=None, config_dict=
            
            Currently only works with two channels. Every part which requires two channels ist marked with ### two
         """
-
         # Find all the peaks and store them in a dictionary
-        peaks, peaks_prop = tag_peaks(input_data, peak_minimal_prominence, peak_minimal_distance, peak_minimal_width)
+        
+        #this is ugly :(
+        #peaks, peaks_prop = tag_peaks(input_data, peak_minimal_prominence, peak_minimal_distance, peak_minimal_width, peak_gradient_bound["upper"],peak_gradient_bound["lower"])
+        peaks, peaks_prop = tag_peaks(input_data, peak_config)
 
         peak_data= np.zeros( (1,), dtype=pulse_par_dtype)
         

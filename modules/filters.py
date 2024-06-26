@@ -5,22 +5,21 @@ from numpy.lib import recfunctions as rfn
 import sys
 import os
 
-def find_rightmost_valid_position(array, upper_bound, lower_bound, right_bound_index):
+def find_rightmost_valid_position(array, gradient_bound, right_bound_index):
     """
     Finds the rightmost position in the array where the values are within specified bounds.
 
     Parameters:
         array (ndarray): Array of values.
-        upper_bound (float): Upper bound for the values.
-        lower_bound (float): Lower bound for the values.
+        gradient_bound (dict): Dictionary with upper and lower bounds for gradient values.
         right_bound_index (int): Right boundary index for searching positions within bounds.
 
     Returns:
         int: The rightmost index of the position where the value is within bounds if found, otherwise None.
     """
     # Find positions where the array values are within the specified bounds
-    valid_range = np.logical_and(array[:right_bound_index] <= upper_bound, 
-                                 array[:right_bound_index] >= lower_bound)
+    valid_range = np.logical_and(array[:right_bound_index] <= gradient_bound['upper'], 
+                                 array[:right_bound_index] >= gradient_bound['lower'])
     valid_positions = np.nonzero(valid_range)[0]
     
     # Return the last position where the value is within bounds, if any
@@ -29,7 +28,7 @@ def find_rightmost_valid_position(array, upper_bound, lower_bound, right_bound_i
     else:
         return None
 
-def compute_peak_properties(input_signal, peaks_indices, peaks_properties, array, upper_bound, lower_bound):
+def compute_peak_properties(input_signal, peaks_indices, peaks_properties, array, gradient_bound):
     """
     Computes and filters properties of the peaks in the input signal based on criteria.
 
@@ -38,8 +37,7 @@ def compute_peak_properties(input_signal, peaks_indices, peaks_properties, array
         peaks_indices (ndarray): Indices of the peaks.
         peaks_properties (dict): Properties of the peaks.
         array (ndarray): Array used for additional computations (e.g., gradient).
-        upper_bound (float): Upper bound for valid positions in the array.
-        lower_bound (float): Lower bound for valid positions in the array.
+        gradient_bound (dict): Dictionary with upper and lower bounds for gradient values.
 
     Returns:
         tuple: Filtered peaks indices and their properties.
@@ -55,7 +53,7 @@ def compute_peak_properties(input_signal, peaks_indices, peaks_properties, array
 
     for i, peak_index in enumerate(peaks_indices):
         right_bound_index = int(right_bound_indices[i])
-        start_position = find_rightmost_valid_position(array, upper_bound, lower_bound, right_bound_index)
+        start_position = find_rightmost_valid_position(array, gradient_bound, right_bound_index)
         
         if start_position is not None:
             start_height = input_signal[start_position]
@@ -78,21 +76,30 @@ def compute_peak_properties(input_signal, peaks_indices, peaks_properties, array
     
     return filtered_peaks_indices, filtered_peaks_properties
 
-def tag_peaks(input_data, prominence, distance, width, upper_bound, lower_bound):
+def tag_peaks(input_data, peak_config):
     """
     Tags peaks in the input data and computes their properties.
 
     Parameters:
         input_data (ndarray): Structured array with signal data.
-        prominence (dict): Prominence values for each signal.
-        distance (dict): Minimum distance between peaks for each signal.
-        width (dict): Width values for each signal.
-        upper_bound (dict): Upper bounds for valid positions in the gradient array for each signal.
-        lower_bound (dict): Lower bounds for valid positions in the gradient array for each signal.
+        peak_config (dict): Dictionary with peak configuration parameters.
+            prominence (dict): Dictionary with prominence values for each signal.
+            distance (dict): Dictionary with distance values for each signal.
+            width (dict): Dictionary with width values for each signal.
+            gradient_bound (dict): Dictionary with upper and lower bounds for gradient values.
+            
 
     Returns:
         tuple: Peaks indices and their properties for each signal.
     """
+    
+    prominence = peak_config["prominence"]
+    distance = peak_config["distance"]
+    width = peak_config["width"]
+    
+    gradient_bound = peak_config["gradient_bound"]
+    
+    
     peaks = {}
     peaks_properties = {}
 
@@ -101,9 +108,9 @@ def tag_peaks(input_data, prominence, distance, width, upper_bound, lower_bound)
             input_data[key], prominence=prominence[key], distance=distance[key], width=width[key]
         )
 
-        gradient_array = np.gradient(input_data[key])  # Here you can pass any array, not just gradient
+        gradient_array = np.gradient(input_data[key])
         filtered_peaks_indices, filtered_peaks_properties = compute_peak_properties(
-            input_data[key], peaks_indices, initial_peaks_properties, gradient_array, upper_bound[key], lower_bound[key]
+            input_data[key], peaks_indices, initial_peaks_properties, gradient_array, gradient_bound[key]
         )
 
         peaks[key] = filtered_peaks_indices
