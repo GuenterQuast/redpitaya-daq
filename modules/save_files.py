@@ -5,10 +5,13 @@
 
 import sys
 import os
-from mimocorb.buffer_control import rb_toTxtfile, rb_toParquetfile
+from mimocorb.buffer_control import rb_toTxtfile, rb_toParquetfile, rbDrain
 
+def drain(source_list=None, sink_list=None, observe_list=None, config_dict=None, **rb_info):
+    rd_to_null = rbDrain(source_list=source_list, config_dict=config_dict, **rb_info)
+    rd_to_null()
+    # print("\n ** drain: end seen")
 
-# def save_to_txt(source_dict):
 def save_to_txt(source_list=None, sink_list=None, observe_list=None, config_dict=None, **rb_info):
     sv = rb_toTxtfile(source_list=source_list, config_dict=config_dict, **rb_info)
     sv()
