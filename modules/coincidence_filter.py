@@ -54,11 +54,6 @@ def find_peaks(source_list=None, sink_list=None, observe_list=None, config_dict=
     coincidence_window = config_dict["coincidence_window"]
     
     
-    peak_minimal_prominence = config_dict["peak_minimal_prominence"]
-    peak_minimal_distance = config_dict["peak_minimal_distance"]
-    peak_minimal_width = config_dict["peak_minimal_width"]
-    peak_gradient_bound = config_dict["gradient_bound"]
-    
     peak_config = config_dict["peak_config"]
     
     
