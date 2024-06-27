@@ -150,7 +150,7 @@ class rpControl(QMainWindow, Ui_RPCONTROL):
             self.hst2 = None
             # smaller window
             self.setWindowTitle("RedPitaya DAQ")
-            self.setGeometry(0, 0, 800, 600)
+            self.setGeometry(0, 0, 800, 650)
             self.log.print("runnning in DAQ mode")
         self.osc_daq = OscDAQ(self, self.log)        
         self.gen = GenDisplay(self, self.log)
@@ -207,7 +207,8 @@ class rpControl(QMainWindow, Ui_RPCONTROL):
     def parse_confd(self):
         # all relevant parameters are here
         self.daq_mode = False # True
-        self.ip_address ='192.168.1.100' if "ip_address" not in self.confd \
+#        self.ip_address ='192.168.1.100' if "ip_address" not in self.confd \
+        self.ip_address = None if "ip_address" not in self.confd \
             else self.confd["ip_address"]
         self.sample_size = 2048 if "number_of_samples" not in self.confd \
             else self.confd["number_of_samples"]
@@ -227,6 +228,15 @@ class rpControl(QMainWindow, Ui_RPCONTROL):
         self.readInterval = 1000 # used to control update of oscilloscope display
         # other parameters
         self.filename = ''  # file name for data export, '' means disable
+        # generator defaults
+        self.gen_rateValue = 2000 if "genRate" not in self.confd \
+            else self.confd["genRate"]
+        self.gen_poissonButton = True if "genPoisson" not in self.confd \
+            else self.confd["genPoisson"]
+        self.gen_fallValue = 10 if "fallTime" not in self.confd \
+            else self.confd["fallTime"]
+        self.gen_riseValue = 50 if "riseTime" not in self.confd \
+            else self.confd["riseTime"]
 
     def parse_args(self):
         parser = argparse.ArgumentParser(description=__doc__)
@@ -243,7 +253,7 @@ class rpControl(QMainWindow, Ui_RPCONTROL):
         parser.add_argument('--trigger_source', type=int, choices={1, 2},
                             default=self.trigger_source+1, help='trigger channel')
         parser.add_argument('--trigger_mode', type=int, choices={0 , 1},
-                            default=self.trigger_mode, help='trigger mode')
+                           default=self.trigger_mode, help='trigger mode')
         parser.add_argument('-s', '--sample_size', type=int, default=self.sample_size,
             help='size of waveform sample')
         parser.add_argument('-p', '--pretrigger_fraction', type=float,
@@ -1110,7 +1120,7 @@ class OscDAQ(QWidget, Ui_OscDisplay):
             self.Nprev = self.NTrig
             T_active = t - self.T0
             self.dT = 0.
-            status_txt = "active: {:.1f}s  trigger rate: {:.2f} Hz,  data rate: {:.4g} MB/s".format(T_active, r, r*self.l_tot*4e-6)
+            status_txt = "active: {:.0f}s  trigger rate: {:.0f} Hz,  data rate: {:.3g} MB/s".format(T_active, r, r*self.l_tot*4e-6)
             # print(status_txt, end='\r')
             self.osctxt.set_text(status_txt)
             # update graph on display
@@ -1179,6 +1189,10 @@ class GenDisplay(QWidget, Ui_GenDisplay):
         self.setupUi(self)
         # initialize variables
         self.rpControl = rpControl
+        self.poissonButton.setChecked(self.rpControl.gen_poissonButton)
+        self.fallValue.setValue(self.rpControl.gen_fallValue)
+        self.riseValue.setValue(self.rpControl.gen_riseValue)
+        self.rateValue.setValue(self.rpControl.gen_rateValue)        
         self.log = log
         self.bins = 4096
         self.buffer = np.zeros(self.bins, np.uint32)
@@ -1241,7 +1255,7 @@ class GenDisplay(QWidget, Ui_GenDisplay):
             return
         self.rpControl.set_gen_fall(self.fallValue.value())
         self.rpControl.set_gen_rise(self.riseValue.value())
-        self.rpControl.set_gen_rate(self.rateValue.value() * 1000)
+        self.rpControl.set_gen_rate(self.rateValue.value())
         self.rpControl.set_gen_dist(self.poissonButton.isChecked())
         for value in np.arange(self.bins, dtype=np.uint64) << 32 | self.buffer:
             self.rpControl.set_gen_bin(value)

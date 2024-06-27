@@ -177,7 +177,7 @@
       <item>
        <widget class="QLabel" name="ratelLabel">
         <property name="text">
-         <string>rate, ksps</string>
+         <string>rate, Hz</string>
         </property>
        </widget>
       </item>
@@ -187,10 +187,10 @@
          <number>1</number>
         </property>
         <property name="maximum">
-         <number>100</number>
+         <number>10000</number>
         </property>
         <property name="singleStep">
-         <number>1</number>
+         <number>100</number>
         </property>
        </widget>
       </item>
