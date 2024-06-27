@@ -48,7 +48,6 @@ Functions:
       config_file: "config/spectrum_config.yaml"
 
   - Fkt_1:
-       ##  for simulation with rbPut
        file_name: "redP_mimoCoRB"
        fkt_name: "redP_to_rb"
        num_process: 1
@@ -58,7 +57,7 @@ Functions:
   - Fkt_2:
        file_name: "modules/spectrum_filter"
        fkt_name: "find_peaks"
-       num_process: 2
+       num_process: 4
        RB_assign:
            RB_1: "read"
            RB_2: "write"
