@@ -160,7 +160,7 @@ class rpControl(QMainWindow, Ui_RPCONTROL):
         self.tabindex_osc = self.tabWidget.addTab(self.osc_daq, "Oscilloscope")
         self.tabindex_gen = self.tabWidget.addTab(self.gen, "Pulse generator")
         # configure controls
-        self.connectButton.clicked.connect(self.start)
+        self.connectButton.clicked.connect(self.startIO)
         self.neg1Check.toggled.connect(partial(self.set_negator, 0))
         self.neg2Check.toggled.connect(partial(self.set_negator, 1))
         self.rateValue.addItems(map(str, rpControl.rates.values()))
@@ -197,16 +197,16 @@ class rpControl(QMainWindow, Ui_RPCONTROL):
         self.neg1Check.setChecked(self.invert1)
         self.neg2Check.setChecked(self.invert2)
         
-        # automatically connect
+        # automatically connect and start
         if self.ip_address is not None:
             self.addrValue.setText(self.ip_address)
-            self.start()
+            self.log.print("starting IO")
+            self.startIO()
         else:    
             self.addrValue.setStyleSheet("color: darkorange")
 
     def parse_confd(self):
         # all relevant parameters are here
-        self.daq_mode = False # True
 #        self.ip_address ='192.168.1.100' if "ip_address" not in self.confd \
         self.ip_address = None if "ip_address" not in self.confd \
             else self.confd["ip_address"]
@@ -228,6 +228,10 @@ class rpControl(QMainWindow, Ui_RPCONTROL):
         self.readInterval = 1000 # used to control update of oscilloscope display
         # other parameters
         self.filename = ''  # file name for data export, '' means disable
+        self.autostart = False if "startDAQ" not in self.confd \
+            else self.confd["startDAQ"]
+        print("autostart", self.autostart)
+
         # generator defaults
         self.gen_rateValue = 2000 if "genRate" not in self.confd \
             else self.confd["genRate"]
@@ -237,6 +241,8 @@ class rpControl(QMainWindow, Ui_RPCONTROL):
             else self.confd["fallTime"]
         self.gen_riseValue = 50 if "riseTime" not in self.confd \
             else self.confd["riseTime"]
+        self.gen_autostart = False if "genStart" not in self.confd \
+            else self.confd["genStart"]
 
     def parse_args(self):
         parser = argparse.ArgumentParser(description=__doc__)
@@ -286,7 +292,7 @@ class rpControl(QMainWindow, Ui_RPCONTROL):
         self.time_bin = 0.008
     # !gq end
         
-    def start(self):
+    def startIO(self):
         self.socket.connectToHost(self.addrValue.text(), 1001) # connect to port 1001 (mcpha_server on RP) 
         self.startTimer.start(1000) # shorter time-out
         self.connectButton.setText("Disconnect")
@@ -337,12 +343,15 @@ class rpControl(QMainWindow, Ui_RPCONTROL):
         self.set_negator(0, self.neg1Check.isChecked())
         self.set_negator(1, self.neg2Check.isChecked())
         #
-        # finally, start readout timer calling update_oscData() read_timeout()
+        # start timer calling update_oscData() read_timeout()
         self.readTimer.start(self.readInterval)
 
-       #### start oscilloscope in DAQ mode
-#!        if self.interactive and self.daq_mode:
-        if self.daq_mode:
+       #### start generator and oscilloscope in DAQ mode
+        if self.gen_autostart:  # start pulse generator
+            self.log.print("starting pulse generator")
+            self.gen.start()
+        if not self.interactive and self.autostart:   # start daq mode
+            self.log.print("starting daq")
             self.osc_daq() # __call__ method of osc_daq class 
         
     def command(self, code, number, value):

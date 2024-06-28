@@ -62,7 +62,8 @@ Functions:
 
   - Fkt_3:
       file_name: "modules/save_files"
-      fkt_name: "save_to_txt"
+      fkt_name: "save_to_txt" # save data to text
+     # fkt_name: "drain"        # no saving of data
       num_process: 1
       RB_assign:
            RB_2: "read"
