@@ -308,7 +308,7 @@ class rpControl(QMainWindow, Ui_RPCONTROL):
         self.socket.abort()
         self.connectButton.setText("Connect")
         self.connectButton.clicked.disconnect()
-        self.connectButton.clicked.connect(self.start)
+        self.connectButton.clicked.connect(self.startIO)
         self.addrValue.setStyleSheet("color: red")
         self.log.print("IO stopped")
         self.idle = True
