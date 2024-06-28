@@ -29,7 +29,7 @@ find_peaks:
   trigger_channel: *trigger_channel
   trigger_position_tolerance: 20  # in number of samples
 
-# dict for RedPitaya redPoscdaq
+# dict for RedPitaya redPdaq
 redP_to_rb:
   ip_address: '192.168.0.103'
   eventcount: *number_of_events
@@ -43,7 +43,13 @@ redP_to_rb:
   decimation_index: *decimation
   invert_channel1: *invert1
   invert_channel2: *invert2
-  
+  # generator settings
+  genRate: 500   # average rate in Hz
+  genPoisson: true # use Poisson 
+  fallTime: 10   # pulse fall time in µs
+  riseTime: 50   # pulse rise time in ns
+
+
 # Dict for simul_source.py
 simul_source:
   sample_time_ns: *sample_time_ns
