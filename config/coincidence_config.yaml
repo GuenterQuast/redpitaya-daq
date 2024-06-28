@@ -69,9 +69,9 @@ find_peaks:
 #   trigger_channel: *trigger_channel
 #   trigger_position_tolerance: 20  # in number of samples
 
-# dict for RedPitaya redPoscdaq
+# dict for RedPitaya redPdaq
 redP_to_rb:
-  ip_address: '192.168.0.103'
+  ip_address: '10.42.0.107'
   eventcount: *number_of_events
   sample_time_ns: *sample_time_ns
   number_of_samples: *number_of_samples
@@ -83,6 +83,7 @@ redP_to_rb:
   decimation_index: *decimation
   invert_channel1: *invert1
   invert_channel2: *invert2
+  startDAQ: true  # start in DAQ mode
   
 # Dict for simul_source.py
 simul_source:
