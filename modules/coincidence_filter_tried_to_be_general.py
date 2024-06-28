@@ -61,21 +61,20 @@ def find_peaks(source_list=None, sink_list=None, observe_list=None, config_dict=
     list_of_channels = config_dict["list_of_channels"]
     clipping_level = config_dict["clipping_level"]
     
-    if len(list_of_channels)!=2:
-        raise ValueError(f'{list_of_channels} has not 2 channels')
+    
     if trigger_channel not in list_of_channels:
         raise ValueError(f'{trigger_channel} not in list of channels: {list_of_channels}') 
     trigger_position_tolerance = config_dict["trigger_position_tolerance"]
     
-    for ch in list_of_channels:
-        if ch!=trigger_channel:
-            signal_channel=ch
+    signal_channels = [channel for channel in list_of_channels if channel != trigger_channel]
     
 
     pulse_par_dtype = sink_list[-1]['dtype']
+    empty_peak_data=np.zeros( (1,), dtype=pulse_par_dtype)
     
-    Delta_T=coincidence_window['offest_from_trigger']/sample_time_ns
-    w=coincidence_window[signal_channel]['width_of_window']/sample_time_ns
+    
+    
+    
     
     
     def tag_pulses(input_data):   
@@ -87,37 +86,38 @@ def find_peaks(source_list=None, sink_list=None, observe_list=None, config_dict=
 
             Returns: list of parameterized pulses
             
-
+            
+            Currently only works with two channels. Every part which requires two channels ist marked with ### two
         """
         # Discard all events with clipping
         if check_for_clipping(input_data,clipping_level): return None
         # Only consider events with one peak in the trigger_channel
         if len(peaks[trigger_channel])!=1: return None
         
-        
         # Find all peaks and store their properties in a dict
         peaks, peaks_prop = tag_peaks(input_data, peak_config)
-        peak_data=np.zeros( (1,), dtype=pulse_par_dtype)
+        peak_data=empty_peak_data.copy()
         
         trigger_peak=peaks[trigger_channel][0]
-        
-        # Check that only one peak was found in signal_channel
-        if len(peaks[signal_channel])!=1: 
-            return None
-        signal_peak=peaks[signal_channel][0]
-        
-
-        # check for coincidences
-        if -w/2<=signal_peak-Delta_T-trigger_peak<=w/2:
-            # explanation: t+Delta_T-w/2<=peak<=t+Delta_T+w/2
-            """ab hier erstmal nur für einen trigger und einen signal channel"""
-            peak_data[0][signal_channel+'_position'] = signal_peak
-            peak_data[0][trigger_channel+'_position'] = trigger_peak
-            peak_data[0][signal_channel+'_height'] = peaks_prop[signal_channel]['relative_height'][0] # das muss später weg wenn man mehr als ein peak betrachtet
-            peak_data[0][trigger_channel+'_height'] = peaks_prop[trigger_channel]['relative_height'][0]
+        for signal_channel in signal_channels:
+            if len(peaks[signal_channel])!=1: ### two
+                return None ### two
+            # calculation should be moved to init of a class
+            Delta_T=coincidence_window[signal_channel]['offest_from_trigger']/sample_time_ns
+            w=coincidence_window[signal_channel]['width_of_window']/sample_time_ns
+            for peak in peaks[signal_channel]:
+                # check for coincidences
+                if -w/2<=peak-Delta_T-trigger_peak<=w/2:
+                    # explanation: t+Delta_T-w/2<=peak<=t+Delta_T+w/2
+                    """ab hier erstmal nur für einen trigger und einen signal channel"""
+                    peak_data[0][signal_channel+'_position'] = peak
+                    peak_data[0][trigger_channel+'_position'] = trigger_peak
+                    peak_data[0][signal_channel+'_height'] = peaks_prop[signal_channel]['relative_height'][0] # das muss später weg wenn man mehr als ein peak betrachtet
+                    peak_data[0][trigger_channel+'_height'] = peaks_prop[trigger_channel]['relative_height'][0]
+        if peak_data!=empty_peak_data:
             return peak_data
-        else:
-            return None
+        else: 
+            return None  
         
     p_filter = rbTransfer(source_list=source_list, sink_list=sink_list, config_dict=config_dict,
                         ufunc=tag_pulses, **rb_info)
