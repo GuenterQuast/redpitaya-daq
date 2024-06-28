@@ -146,7 +146,69 @@ multiple processes running in parallel.
 A *mimoCoRB* setup-file is also provided and can be started by typing
 `redP_mimoCoRB.py setup.yaml` on the command line. Modules and configuration
 files for a pulse-height analysis of recorded signals are contained as exampless
-in the sub-directories *modules/* and *config/*, respectively.
+in the sub-directories *modules/* and *config/*, respectively. The relevant modules are
+
+  - *redP_momocorb.py*, function *redP_to_rb()* # code to run redPdaq.py as a mimoCoRB client  
+  - *modules/spectrum_filter.py*    # code to determine pulse height (depends on *filters.py*)
+  - *modules/redPitaya_source.py*   # a simulator for data input 
+
+Some modules for plotting and data storage are taken from the *mimoCoRB* package:
+
+  - *modules/plot_histograms.py*
+  - *modules/plot_waveform.py*
+  - *modules/save_files.py*
+
+The configuraion file is
+
+  - *config/spectrum_config.yaml*
+
+The documentation of the *mimoCoRB* package explains the general layout. Special parts for
+the RedPitaya are contained in the sections *redP_to_rb:* and *find_peaks:*. 
+Presently known keywords for the configuration are shown in the yaml-snippet below:
+
+```
+  # dict for RedPitaya redPdaq
+  redP_to_rb:
+  ip_address: '10.42.0.100'
+  eventcount: *number_of_events
+  sample_time_ns: *sample_time_ns
+  number_of_samples: *number_of_samples
+  pre_trigger_samples: *pre_trigger_samples
+  trigger_channel: *trigger_channel
+  trigger_level: *trigger_level
+  trigger_mode: "norm" # or "auto"
+  # special settings for RedPitaya
+  decimation_index: *decimation
+  invert_channel1: *invert1
+  invert_channel2: *invert2
+  startDAQ: true  # start in DAQ mode
+
+  # generator settings
+  genRate: 500   # average rate in Hz
+  genPoisson: true # use Poisson 
+  fallTime: 10   # pulse fall time in µs
+  riseTime: 50   # pulse rise time in ns
+  genStart: true # start pulse generator (for tests)
+```
+
+It the value of the keyword *startDAQ* is `false`, the client
+will start in an interactive mode, permitting to set options
+for the decimation factor, the oscilloscope or the pulse
+generator via the graphical interface. The data acquisition
+is started using the button *StartDAQ* in the oscilloscope
+display. 
+
+If *startDAQ* is set to `true`, the data acquisition mode will start
+automatically. In case of an error - most likely a failing network
+connecetion to the RedPitaya - the application will fall back to the 
+interactive mode. In such cases, the problem must be fixed using the 
+graphical interface and then starting data acquisition using the 
+*StartDAQ* button.
+
+The keyword *genStart* can be set to `true` to automatically
+to start the internal pulse generator of the RedPitaya. If
+*out1* is connected with *in1* or *in2*, functionality
+and performance testst can easily be performed. 
 
 
 # Installation of the Package
