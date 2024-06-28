@@ -25,7 +25,8 @@ from mimocorb.buffer_control import rbTransfer
 import numpy as np
 import os, sys
 
-from filters import *
+#from filters import *
+from modules.filters import *
 
 
 def find_peaks(source_list=None, sink_list=None, observe_list=None, config_dict=None, **rb_info):

@@ -35,8 +35,12 @@ find_peaks:
       ch1: 10
       ch2: 10
     gradient_bound: #range of the gradient in which it can be considered 0 (for calculating of basline)
-      upper: 0
-      lower: 0
+      ch1: 
+        upper: 0
+        lower: 0
+      ch2: 
+        upper: 0
+        lower: 0
     
 
   

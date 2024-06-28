@@ -110,7 +110,8 @@ def tag_peaks(input_data, peak_config):
 
         gradient_array = np.gradient(input_data[key])
         filtered_peaks_indices, filtered_peaks_properties = compute_peak_properties(
-            input_data[key], peaks_indices, initial_peaks_properties, gradient_array, gradient_bound[key]
+            input_data[key], 
+            peaks_indices, initial_peaks_properties, gradient_array, gradient_bound[key]
         )
 
         peaks[key] = filtered_peaks_indices
