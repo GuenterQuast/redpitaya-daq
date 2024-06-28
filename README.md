@@ -57,8 +57,8 @@ the Faculty of Physics at Karlsruhe Institute of Technology.
 
 ## Credit:
 
-The code provided here is based on a fork of the sub-directory *projects/mcpha* in
-a project by Pavel Demin, [red-pitaya-notes](https://pavel-demin.github.io/red-pitaya-notes).  
+The code provided here is based on a fork of the sub-directory *projects/mcpha* 
+by Pavel Demin, [red-pitaya-notes](https://pavel-demin.github.io/red-pitaya-notes).  
 *redPdaq.py* contains an extension of the original oscilloscope class enabling fast restart
 and data export.  
 
@@ -140,9 +140,9 @@ An examples of call-back functions callable from within redPdaq is provided with
 ### Running redPdaq as a mimoCoRB client  
 
 *redP_mimocorb.py* is a script containing code to be started from the command line and
-a function definde in the script, *redP_to_rb*, is called as a sub-process within the
-*mimiCoRB* buffer manager frame-work for more advanced data analysis tasks requiring
-multiple processes running in parallel.
+the function *redP_to_rb*  defined in the script is called as a sub-process within the
+*mimiCoRB* buffer manager frame-work.  This feature supports  more advanced data analysis
+ tasks requiring multiple processes running in parallel.
 A *mimoCoRB* setup-file is also provided and can be started by typing
 `redP_mimoCoRB.py setup.yaml` on the command line. Modules and configuration
 files for a pulse-height analysis of recorded signals are contained as exampless
@@ -156,20 +156,20 @@ Some modules for plotting and data storage are taken from the *mimoCoRB* package
 
   - *modules/plot_histograms.py*
   - *modules/plot_waveform.py*
-  - *modules/save_files.py*
+  - *modules/exporters.py*
 
 The configuraion file is
 
   - *config/spectrum_config.yaml*
 
-The documentation of the *mimoCoRB* package explains the general layout. Special parts for
-the RedPitaya are contained in the sections *redP_to_rb:* and *find_peaks:*. 
+The documentation of the *mimoCoRB* package explains the general layout. Special configurations
+ for the RedPitaya is contained in the sections *redP_to_rb:* and *find_peaks:*. 
 Presently known keywords for the configuration are shown in the yaml-snippet below:
 
-```
-  # dict for RedPitaya redPdaq
+```yaml
+  # yaml for redPdaq
   redP_to_rb:
-  ip_address: '10.42.0.100'
+  ip_address: '192.168.1.100'
   eventcount: *number_of_events
   sample_time_ns: *sample_time_ns
   number_of_samples: *number_of_samples

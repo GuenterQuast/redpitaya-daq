@@ -31,7 +31,9 @@ find_peaks:
 
 # dict for RedPitaya redPdaq
 redP_to_rb:
-  ip_address: '10.42.0.107'
+#  ip_address: '192.168.1.100'
+#  ip_address: '10.42.0.107'
+  ip_address: '192.168.178.109'
   eventcount: *number_of_events
   sample_time_ns: *sample_time_ns
   number_of_samples: *number_of_samples
