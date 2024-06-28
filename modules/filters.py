@@ -120,6 +120,23 @@ def tag_peaks(input_data, peak_config):
     return peaks, peaks_properties
 
 
+def check_for_clipping(input_data, clipping_value):
+    """
+    Check if any channel in the input data exceeds the specified clipping value.
+
+    Args:
+        input_data (numpy.ndarray): The input data.
+        clipping_value (float): The maximum absolute value allowed for each channel.
+
+    Returns:
+        bool: True if any channel exceeds the clipping value, False otherwise.
+    """
+    for channel in input_data.dtype.names:
+        if np.max(input_data[channel]) >= clipping_value or np.min(input_data[channel]) <= -clipping_value:
+            return True
+        else:
+            return False
+
 def normed_pulse(ch_input, position, prominence, analogue_offset):
     # > Compensate for analogue offset
     ch_data = ch_input - analogue_offset

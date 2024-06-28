@@ -1,0 +1,92 @@
+# Configuration for recording two channels with mimoCoRB
+#  -----------------------------------------------------
+#
+# configure two buffers:
+#  - RB_1 for raw waveforms
+#  - RB_2 for derived pulse parameters
+#  data from RB_2, the result buffer, are saved to a file in csv (text) format.
+#
+#  - data from RB_1 are also passed to an obsever process driving a real-time display
+#  - data from RB_2 are passed to a Reader process driving a real-time histogram display
+#
+# Notes:
+# 
+#    1. additional config files controlling the user functions are
+#       located in the subdirectory config/
+#    2. necessary application-specific user code is located
+#       in the subdirectory modules/
+#
+# ----------------------------------------------------------------------------
+#
+
+RingBuffer:
+  # define ring buffers
+  - RB_1:
+      # raw input data buffer (from picoScope, file or simulation)
+      number_of_slots: 100
+      channel_per_slot: 1000
+      data_type:
+          1: ['ch1', "int16"]
+          2: ['ch2', "int16"]
+  - RB_2:
+      # filter input data buffer (coincidence of peaks, clipping)
+      number_of_slots: 100
+      channel_per_slot: 1000
+      data_type:
+          1: ['ch1', "int16"]
+          2: ['ch2', "int16"]
+  - RB_3:
+      # buffer with correct signature double pulse parameters
+      number_of_slots: 100
+      channel_per_slot: 1
+      data_type:
+      data_type:
+          1: ['ch1_height', "int16"]
+          2: ['ch1_position', "int16"]
+          3: ['ch2_height', "int16"]
+          4: ['ch2_position', "int16"]
+
+
+Functions:
+  # define functions and ringbuffer assignment
+
+  - Fkt_main:
+      config_file: "config/coincidence_config.yaml"
+
+  - Fkt_1:
+       file_name: "redP_mimoCoRB"
+       fkt_name: "redP_to_rb"
+       num_process: 1
+       RB_assign:
+           RB_1: "write"
+
+  - Fkt_2:
+       file_name: "modules/coincidence_filter_multiple"
+       fkt_name: "find_peaks"
+       num_process: 4
+       RB_assign:
+           RB_1: "read"
+           RB_2: "write"
+
+  - Fkt_3:
+      file_name: "modules/save_files"
+      fkt_name: "save_to_txt" # save data to text
+     # fkt_name: "drain"        # no saving of data
+      num_process: 1
+      RB_assign:
+           RB_2: "read"
+
+# --- the following functions are optioal 	   
+
+  - Fkt_4:
+      file_name: "modules/plot_waveform"
+      fkt_name: "plot_waveform"
+      num_process: 1
+      RB_assign:
+           RB_2: "observe"
+  - Fkt_5:
+      file_name: "modules/plot_histograms"
+      fkt_name: "plot_histograms"
+      num_process: 1
+      RB_assign:
+           RB_3: "read"  # pulse parameters

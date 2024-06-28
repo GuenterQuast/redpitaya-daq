@@ -47,7 +47,7 @@ find_peaks:
   coincidence_window: 
     ch2:
       offest_from_trigger: 0 # in ns
-      width_of_window: 2000 # in ns
+      width_of_window: 20000 # in ns
   list_of_channels:  
     - 'ch1'
     - 'ch2'

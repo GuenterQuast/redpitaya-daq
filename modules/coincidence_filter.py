@@ -70,6 +70,7 @@ def find_peaks(source_list=None, sink_list=None, observe_list=None, config_dict=
     
 
     pulse_par_dtype = sink_list[-1]['dtype']
+    empty_peak_data=np.zeros( (1,), dtype=pulse_par_dtype)
     
     
     
@@ -81,45 +82,42 @@ def find_peaks(source_list=None, sink_list=None, observe_list=None, config_dict=
 
         This function to be called by instance of class mimoCoRB.rbTransfer
 
-           Args:  input data as structured ndarray
-    
-           Returns: list of parameterized pulses
-           
-           
-           Currently only works with two channels. Every part which requires two channels ist marked with ### two
-        """
-        # Find all the peaks and store them in a dictionary
-        
-        #this is ugly :(
-        #peaks, peaks_prop = tag_peaks(input_data, peak_minimal_prominence, peak_minimal_distance, peak_minimal_width, peak_gradient_bound["upper"],peak_gradient_bound["lower"])
-        peaks, peaks_prop = tag_peaks(input_data, peak_config)
+            Args:  input data as structured ndarray
 
-        peak_data= np.zeros( (1,), dtype=pulse_par_dtype)
-        
+            Returns: list of parameterized pulses
+            
+            
+            Currently only works with two channels. Every part which requires two channels ist marked with ### two
+        """
+        # Discard all events with clipping
+        if check_for_clipping(input_data): return None
         # Only consider events with one peak in the trigger_channel
-        if len(peaks[trigger_channel]!=1):
-            return None
+        if len(peaks[trigger_channel])!=1: return None
+        
+        # Find all peaks and store their properties in a dict
+        peaks, peaks_prop = tag_peaks(input_data, peak_config)
+        peak_data=empty_peak_data.copy()
+        
         trigger_peak=peaks[trigger_channel][0]
         for signal_channel in signal_channels:
             if len(peaks[signal_channel])!=1: ### two
                 return None ### two
+            # calculation should be moved to init of a class
             Delta_T=coincidence_window[signal_channel]['offest_from_trigger']/sample_time_ns
             w=coincidence_window[signal_channel]['width_of_window']/sample_time_ns
             for peak in peaks[signal_channel]:
-                # filter out clipped peaks
-                if input_data[signal_channel][peak]>=clipping_level:
-                    return None
                 # check for coincidences
                 if -w/2<=peak-Delta_T-trigger_peak<=w/2:
                     # explanation: t+Delta_T-w/2<=peak<=t+Delta_T+w/2
                     """ab hier erstmal nur für einen trigger und einen signal channel"""
                     peak_data[0][signal_channel+'_position'] = peak
                     peak_data[0][trigger_channel+'_position'] = trigger_peak
-                    peak_data[0][signal_channel+'_height'] = peaks_prop[signal_channel]['relative_height']
-                    peak_data[0][trigger_channel+'_height'] = peaks_prop[trigger_channel]['relative_height']
-        
-        
-        return [peak_data]    
+                    peak_data[0][signal_channel+'_height'] = peaks_prop[signal_channel]['relative_height'][0] # das muss später weg wenn man mehr als ein peak betrachtet
+                    peak_data[0][trigger_channel+'_height'] = peaks_prop[trigger_channel]['relative_height'][0]
+        if peak_data!=empty_peak_data:
+            return peak_data
+        else: 
+            return None  
         
     p_filter = rbTransfer(source_list=source_list, sink_list=sink_list, config_dict=config_dict,
                         ufunc=tag_pulses, **rb_info)
