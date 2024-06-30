@@ -1,4 +1,5 @@
-"""Module save_files to handle file I/O for data in txt and parquet format
+"""Module exporters.py  
+   data export to files in txt and parquet format and draining of buffers
 
    This module relies on classes in mimocorb.buffer_control
 """

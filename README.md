@@ -57,8 +57,8 @@ the Faculty of Physics at Karlsruhe Institute of Technology.
 
 ## Credit:
 
-The code provided here is based on a fork of the sub-directory *projects/mcpha* in
-a project by Pavel Demin, [red-pitaya-notes](https://pavel-demin.github.io/red-pitaya-notes).  
+The code provided here is based on a fork of the sub-directory *projects/mcpha* 
+by Pavel Demin, [red-pitaya-notes](https://pavel-demin.github.io/red-pitaya-notes).  
 *redPdaq.py* contains an extension of the original oscilloscope class enabling fast restart
 and data export.  
 
@@ -140,13 +140,75 @@ An examples of call-back functions callable from within redPdaq is provided with
 ### Running redPdaq as a mimoCoRB client  
 
 *redP_mimocorb.py* is a script containing code to be started from the command line and
-a function definde in the script, *redP_to_rb*, is called as a sub-process within the
-*mimiCoRB* buffer manager frame-work for more advanced data analysis tasks requiring
-multiple processes running in parallel.
+the function *redP_to_rb*  defined in the script is called as a sub-process within the
+*mimiCoRB* buffer manager frame-work.  This feature supports  more advanced data analysis
+ tasks requiring multiple processes running in parallel.
 A *mimoCoRB* setup-file is also provided and can be started by typing
 `redP_mimoCoRB.py setup.yaml` on the command line. Modules and configuration
 files for a pulse-height analysis of recorded signals are contained as exampless
-in the sub-directories *modules/* and *config/*, respectively.
+in the sub-directories *modules/* and *config/*, respectively. The relevant modules are
+
+  - *redP_momocorb.py*, function *redP_to_rb()* # code to run redPdaq.py as a mimoCoRB client  
+  - *modules/spectrum_filter.py*    # code to determine pulse height (depends on *filters.py*)
+  - *modules/redPitaya_source.py*   # a simulator for data input 
+
+Some modules for plotting and data storage are taken from the *mimoCoRB* package:
+
+  - *modules/plot_histograms.py*
+  - *modules/plot_waveform.py*
+  - *modules/exporters.py*
+
+The configuraion file is
+
+  - *config/spectrum_config.yaml*
+
+The documentation of the *mimoCoRB* package explains the general layout. Special configurations
+ for the RedPitaya is contained in the sections *redP_to_rb:* and *find_peaks:*. 
+Presently known keywords for the configuration are shown in the yaml-snippet below:
+
+```yaml
+  # yaml for redPdaq
+  redP_to_rb:
+  ip_address: '192.168.1.100'
+  eventcount: *number_of_events
+  sample_time_ns: *sample_time_ns
+  number_of_samples: *number_of_samples
+  pre_trigger_samples: *pre_trigger_samples
+  trigger_channel: *trigger_channel
+  trigger_level: *trigger_level
+  trigger_mode: "norm" # or "auto"
+  # special settings for RedPitaya
+  decimation_index: *decimation
+  invert_channel1: *invert1
+  invert_channel2: *invert2
+  startDAQ: true  # start in DAQ mode
+
+  # generator settings
+  genRate: 500   # average rate in Hz
+  genPoisson: true # use Poisson 
+  fallTime: 10   # pulse fall time in µs
+  riseTime: 50   # pulse rise time in ns
+  genStart: true # start pulse generator (for tests)
+```
+
+It the value of the keyword *startDAQ* is `false`, the client
+will start in an interactive mode, permitting to set options
+for the decimation factor, the oscilloscope or the pulse
+generator via the graphical interface. The data acquisition
+is started using the button *StartDAQ* in the oscilloscope
+display. 
+
+If *startDAQ* is set to `true`, the data acquisition mode will start
+automatically. In case of an error - most likely a failing network
+connecetion to the RedPitaya - the application will fall back to the 
+interactive mode. In such cases, the problem must be fixed using the 
+graphical interface and then starting data acquisition using the 
+*StartDAQ* button.
+
+The keyword *genStart* can be set to `true` to automatically
+to start the internal pulse generator of the RedPitaya. If
+*out1* is connected with *in1* or *in2*, functionality
+and performance testst can easily be performed. 
 
 
 # Installation of the Package
