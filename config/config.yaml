@@ -1,0 +1,111 @@
+# Dict with uid's as key and a nested dict with configuration variables
+general:
+  runtime: 600  # desired runtime in seconds
+  runevents: &number_of_events 100000
+  number_of_samples: &number_of_samples 1000
+  analogue_offset: &analogue_offset 0
+  # special settings for RedPitaya
+  decimation_index: &decimation 4 # decimation 0:1, i:2^(i+1) # data decimation factor, 0 is 8 ns/sample
+  sample_time_ns: &sample_time_ns 256 #  for decimation 4
+  invert_channel1: &invert1 0 
+  invert_channel2: &invert2 0
+  trigger_level: &trigger_level 50
+  trigger_channel: &trigger_channel '1'
+  trigger_direction: &trigger_direction "rising" # or "falling"
+  pre_trigger_samples: &pre_trigger_samples 103 # 5%
+
+
+# dict for coincidence_filters, function find_peaks
+find_peaks:
+  clipping_level: 4096 # in adc counts
+
+  peak_config:
+    prominence:  # has to be positive and higher than avg. noise peaks to not cause havoc!
+      ch1: 200
+      ch2: 200
+    distance: # minimal distance between two peaks in number of samples
+      ch1: 400
+      ch2: 400
+    width: # in number of samples
+      ch1: 10
+      ch2: 10
+
+  coincidence_window: 
+    offest_from_trigger: 0 # in time bins
+    width_of_window: 10 # in time bins
+
+
+# # dict for spectrum_filter, function find_peaks
+# find_peaks:
+#   # signal_characteristics: 256ns/sample, duration 50µs ( ~200 samples)
+#   sample_time_ns: *sample_time_ns
+#   analogue_offset: *analogue_offset
+#   number_of_samples: *number_of_samples
+#   pre_trigger_samples: *pre_trigger_samples
+#   peak_minimal_prominence: 200  # has to be positive and higher than avg. noise peaks to not cause havoc!
+#   trigger_channel: *trigger_channel
+#   peak_minimal_distance: 400  # minimal distance between two peaks in number of samples
+#   peak_minimal_width: 100  # in number of samples
+#   trigger_channel: *trigger_channel
+#   trigger_position_tolerance: 20  # in number of samples
+
+# dict for RedPitaya redPdaq
+redP_to_rb:
+  ip_address: '10.42.0.107'
+  eventcount: *number_of_events
+  sample_time_ns: *sample_time_ns
+  number_of_samples: *number_of_samples
+  pre_trigger_samples: *pre_trigger_samples
+  trigger_channel: *trigger_channel
+  trigger_level: *trigger_level
+  trigger_mode: "norm" # or "auto"
+  # special settings for RedPitaya
+  decimation_index: *decimation
+  invert_channel1: *invert1
+  invert_channel2: *invert2
+  startDAQ: true  # start in DAQ mode
+  
+# Dict for simul_source.py
+simul_source:
+  sample_time_ns: *sample_time_ns
+  number_of_samples: *number_of_samples
+  pre_trigger_samples: *pre_trigger_samples
+  analogue_offset: *analogue_offset
+  eventcount: *number_of_events
+  sleeptime: 0.03
+  random: true
+
+# Dict for push_simul
+push_simul:
+  sample_time_ns: *sample_time_ns
+  number_of_samples: *number_of_samples
+  pre_trigger_samples: *pre_trigger_samples
+  analogue_offset: *analogue_offset
+  eventcount: *number_of_events
+  sleeptime: 0.03
+  random: true
+
+save_to_txt:
+  filename: "spectrum"
+
+save_parquet:
+  filename: "spectrum"
+
+plot_waveform:
+  title: "Coincidence waveform"
+  min_sleeptime: 0.5                # time to wait between graphics updates
+  number_of_samples: *number_of_samples
+  sample_time_ns: *sample_time_ns
+  analogue_offset: *analogue_offset # analogue offset in V
+  pre_trigger_samples: *pre_trigger_samples
+  channel_range: 4096                # channel range in mV
+  trigger_channel: *trigger_channel  # Channel name in the PicoScope. Valid values are 'A', 'B', 'C' or 'D'  
+  trigger_level: *trigger_level  # value in mV, take account of analogue_offset, which is added to input voltage !
+
+plot_histograms:
+  title: "on-line histograms"
+  # define histograms 
+  histograms:  
+    #  name        min   max   nbins  ymax   name   lin/log
+    ch1_height:   [50., 3000.,   250, 20., "ph 1A", 0]
+    ch2_height:   [50., 3000.,   250, 20., "ph 1B", 0]
