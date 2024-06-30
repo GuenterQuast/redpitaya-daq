@@ -18,7 +18,6 @@ class pulseSimulator:
         self.sleeptime = 0.10 if "sleeptime" not in config_dict else config_dict["sleeptime"]
         self.random = False if "random" not in config_dict else config_dict["random"]
         # parameters for pulse simulation and detector porperties 
-#        self.plen = 400 // self.sample_time_ns  # 400 ns pulse window
         self.plen = 100 if "pulseWindow" not in config_dict else\
             config_dict["pulseWindow"]
         self.pulse_height = 250.0 if "pulseHeight" not in config_dict else\
@@ -30,10 +29,12 @@ class pulseSimulator:
         self.mx_position = self.number_of_samples - self.plen
         self.pulse_template = np.exp(-np.float32(np.linspace(0.0, self.plen, self.plen, endpoint=False)) / self.tau)
         self.noise = self.pulse_height / 30.0
-        self.tau_mu = 2200  # muyon life time in ns
-        self.detector_efficiency = 0.95
-        self.stopping_probability = 0.10
-        
+        self.tau_mu = 2197  # muyon life time in ns
+        self.detector_efficiency = 0.95 if "prbInteraction" not in config_dict else\
+            config_dict["prbInteraction"]
+        self.stopping_probability = 0.10  if "prb2ndPulse" not in config_dict else\
+            config_dict["prb2ndPulse"]
+
     def __call__(self, nchan):
         # initialize output array with noise signal
         pulse = np.float32(self.noise * (0.5 - np.random.rand(nchan, self.number_of_samples)))

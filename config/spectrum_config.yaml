@@ -60,10 +60,13 @@ simul_source:
   pre_trigger_samples: *pre_trigger_samples
   analogue_offset: *analogue_offset
   eventcount: *number_of_events
-  sleeptime: 0.03
-  random: true
   pulseWindow: 400
   pulseHeight: 1500
+  pulseSpread: 100
+  prbInteraction: 1.0 # fully efficient detectors
+  prb2ndPulse: 0. # no 2nd pulses on same channel
+  sleeptime: 0.003
+  random: true
   
 # Dict for push_simul
 push_simul:
