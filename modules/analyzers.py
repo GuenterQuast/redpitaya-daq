@@ -1,3 +1,5 @@
+from scipy import signal
+
 def tag_peaks(input_data, prominence, distance, width):
     peaks = {}
     peaks_prop = {}
@@ -6,3 +8,4 @@ def tag_peaks(input_data, prominence, distance, width):
             input_data[key], prominence=prominence, distance=distance, width=width
         )
     return peaks, peaks_prop
+

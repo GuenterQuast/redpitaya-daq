@@ -47,9 +47,9 @@ def filter(source_list=None, sink_list=None, observe_list=None, config_dict=None
         raise ValueError("ERROR! Wrong configuration passed (in lifetime_modules: calculate_decay_time)!!")
 
     # Load configuration
-    clipping_level = config_dict['clipping_level']
+    clipping_config = config_dict['clipping_config']
     peak_config = config_dict['peak_config']
-    coincidence_window = config_dict['coincidence_window']
+    coincidence_config = config_dict['coincidence_config']
     trigger_channel = config_dict['trigger_channel']
 
     
@@ -65,7 +65,7 @@ def filter(source_list=None, sink_list=None, observe_list=None, config_dict=None
 
         """
         # Check for clipping
-        if clipping(input_data, clipping_level) is None: return None
+        if clipping(input_data, clipping_config) is None: return None
         # Find peaks
         peaks, peaks_properties = tag_peaks(input_data, peak_config)
         # Only consider events with one peak per channel
@@ -73,7 +73,7 @@ def filter(source_list=None, sink_list=None, observe_list=None, config_dict=None
             if len(peaks[key]) != 1:
                 return None
         # Check for coincidences
-        if coincidence(peaks, coincidence_window, trigger_channel) is None: return None
+        if coincidence(peaks, coincidence_config, trigger_channel) is None: return None
         return input_data
         
     
