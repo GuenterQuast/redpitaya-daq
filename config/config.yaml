@@ -17,7 +17,7 @@ general:
 
 # dict for coincidence_filter, function filter_waveform
 filter:
-  clipping_config: 4096 # in adc counts
+  clipping_config: 4095 # in adc counts
   trigger_channel: 'ch1'
   peak_config:
     prominence: 200 # has to be positive and higher than avg. noise peaks to not cause havoc!
