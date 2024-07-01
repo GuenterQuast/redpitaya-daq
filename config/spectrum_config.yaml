@@ -61,8 +61,8 @@ simul_source:
   analogue_offset: *analogue_offset
   eventcount: *number_of_events
   pulseWindow: 400
-  pulseHeight: 1500
-  pulseSpread: 100
+  pulseHeight: [500, 750, 1000, 1250, 1500, 1750, 2000]
+  pulseSpread: 10
   prbInteraction: 1.0 # fully efficient detectors
   prb2ndPulse: 0. # no 2nd pulses on same channel
   sleeptime: 0.003
