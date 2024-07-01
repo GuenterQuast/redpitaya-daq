@@ -51,7 +51,7 @@ Functions:
   # define functions and ringbuffer assignment
 
   - Fkt_main:
-      config_file: "config/coincidence_config.yaml"
+      config_file: "config/config.yaml"
 
   - Fkt_1:
        file_name: "redP_mimoCoRB"

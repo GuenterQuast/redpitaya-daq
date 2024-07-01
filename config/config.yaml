@@ -15,12 +15,10 @@ general:
   pre_trigger_samples: &pre_trigger_samples 103 # 5%
 
 
-# dict for coincidence_filters, function find_peaks
-filter_pulses:
+# dict for coincidence_filter, function filter_waveform
+filter:
   clipping_level: 4096 # in adc counts
-
   trigger_channel: 'ch1'
-
   peak_config:
     prominence:  # has to be positive and higher than avg. noise peaks to not cause havoc!
       ch1: 200
@@ -31,7 +29,6 @@ filter_pulses:
     width: # in number of samples
       ch1: 10
       ch2: 10
-
   coincidence_window: 
     offest_from_trigger: 0 # in time bins
     width_of_window: 10 # in time bins

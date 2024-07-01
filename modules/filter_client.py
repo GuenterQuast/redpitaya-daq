@@ -53,7 +53,7 @@ def filter(source_list=None, sink_list=None, observe_list=None, config_dict=None
     trigger_channel = config_dict['trigger_channel']
 
     
-    def filter_pulses(input_data):   
+    def filter_waveform(input_data):   
         """
         Filters pulses in the input data.
 
@@ -79,7 +79,7 @@ def filter(source_list=None, sink_list=None, observe_list=None, config_dict=None
     
 
     p_filter = rbTransfer(source_list=source_list, sink_list=sink_list, config_dict=config_dict,
-                        ufunc=filter_pulses, **rb_info)
+                        ufunc=filter_waveform, **rb_info)
     p_filter()
 
 if __name__ == "__main__":
