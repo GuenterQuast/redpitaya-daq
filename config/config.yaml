@@ -16,7 +16,7 @@ general:
 
 
 # dict for coincidence_filters, function find_peaks
-find_peaks:
+filter_pulses:
   clipping_level: 4096 # in adc counts
 
   trigger_channel: 'ch1'
