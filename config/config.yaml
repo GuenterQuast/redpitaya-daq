@@ -19,6 +19,8 @@ general:
 find_peaks:
   clipping_level: 4096 # in adc counts
 
+  trigger_channel: 'ch1'
+
   peak_config:
     prominence:  # has to be positive and higher than avg. noise peaks to not cause havoc!
       ch1: 200
