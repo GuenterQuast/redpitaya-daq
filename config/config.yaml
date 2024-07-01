@@ -20,15 +20,9 @@ filter:
   clipping_config: 4096 # in adc counts
   trigger_channel: 'ch1'
   peak_config:
-    prominence:  # has to be positive and higher than avg. noise peaks to not cause havoc!
-      ch1: 200
-      ch2: 200
-    distance: # minimal distance between two peaks in number of samples
-      ch1: 400
-      ch2: 400
-    width: # in number of samples
-      ch1: 10
-      ch2: 10
+    prominence: 200 # has to be positive and higher than avg. noise peaks to not cause havoc!
+    distance: 400 # minimal distance between two peaks in number of samples
+    width: 10 # in number of samples
   coincidence_config: 
     offest: 0 # in time bins
     width: 10 # in time bins
