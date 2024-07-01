@@ -24,7 +24,7 @@ filter:
     distance: 400 # minimal distance between two peaks in number of samples
     width: 10 # in number of samples
   coincidence_config: 
-    offest: 0 # in time bins
+    offset: 0 # in time bins
     width: 10 # in time bins
 
 
