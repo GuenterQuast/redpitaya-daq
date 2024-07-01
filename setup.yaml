@@ -61,7 +61,7 @@ Functions:
            RB_1: "write"
 
   - Fkt_2:
-       file_name: "modules/clipping_coincidence"
+       file_name: "modules/filter_client"
        fkt_name: "filter"
        num_process: 4
        RB_assign:
