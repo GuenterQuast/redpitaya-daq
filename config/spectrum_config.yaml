@@ -46,8 +46,7 @@ redP_to_rb:
   invert_channel1: *invert1
   invert_channel2: *invert2
   startDAQ: true  # start in DAQ mode
-
-# generator settings
+ # generator settings
   genRate: 500   # average rate in Hz
   genPoisson: true # use Poisson 
   fallTime: 10   # pulse fall time in µs
@@ -61,9 +60,14 @@ simul_source:
   pre_trigger_samples: *pre_trigger_samples
   analogue_offset: *analogue_offset
   eventcount: *number_of_events
-  sleeptime: 0.03
+  pulseWindow: 400
+  pulseHeight: [500, 750, 1000, 1250, 1500, 1750, 2000]
+  pulseSpread: 10
+  prbInteraction: 1.0 # fully efficient detectors
+  prb2ndPulse: 0. # no 2nd pulses on same channel
+  sleeptime: 0.003
   random: true
-
+  
 # Dict for push_simul
 push_simul:
   sample_time_ns: *sample_time_ns
