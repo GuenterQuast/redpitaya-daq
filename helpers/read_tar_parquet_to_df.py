@@ -2,7 +2,7 @@ import tarfile
 import io
 import pyarrow.parquet as pq
 
-def process_parquet_files_from_tar(tar_path, work_on_df, number_of_files=None, start=0):
+def process_parquet_files_from_tar(tar_path, work_on_struct_arr, number_of_files=None, start=0):
     """
     Process Parquet files from a tar archive.
 
@@ -30,4 +30,5 @@ def process_parquet_files_from_tar(tar_path, work_on_df, number_of_files=None, s
                         table = pq.read_table(buffer)
                         # Process the Parquet file (table)
                         print(f"Processing {member.name}")
-                        work_on_df(table.to_pandas())
+                        df=table.to_pandas()
+                        work_on_struct_arr(df.to_records(index=False))
