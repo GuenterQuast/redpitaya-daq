@@ -78,6 +78,14 @@ push_simul:
   sleeptime: 0.03
   random: true
 
+# Dict for file_source.tar_parquet_source 
+tar_parquet_source:
+  path: "./source/"
+  number_of_samples: *number_of_samples
+  pre_trigger_samples: *pre_trigger_samples
+  sleeptime: 0.010
+  random: true
+
 save_to_txt:
   filename: "spectrum"
 
