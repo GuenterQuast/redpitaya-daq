@@ -35,6 +35,14 @@ analyzer:
     - 'ch2'
 
 
+# dict for 
+tar_parquet_source:
+  path: "measurements/coincidence/coincidence_small/spectrum.tar"
+  sleeptime: 0.10
+  random: False
+  number_of_samples: 1000
+
+
 # # dict for spectrum_filter, function find_peaks
 # find_peaks:
 #   # signal_characteristics: 256ns/sample, duration 50µs ( ~200 samples)

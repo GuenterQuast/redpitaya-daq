@@ -54,8 +54,10 @@ Functions:
       config_file: "config/config.yaml"
 
   - Fkt_1:
-       file_name: "redP_mimoCoRB"
-       fkt_name: "redP_to_rb"
+       #file_name: "redP_mimoCoRB"
+       #fkt_name: "redP_to_rb"
+       file_name: "file_source"
+       fkt_name: "tar_parquet_source"
        num_process: 1
        RB_assign:
            RB_1: "write"
