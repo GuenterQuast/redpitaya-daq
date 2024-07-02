@@ -42,16 +42,21 @@ def find_rightmost_value_before_index(arr, i, min_value):
 
 def pulse_height_pavel(input_data, pulse_height_pavel_config):
     peaks, peaks_prop = tag_peaks(input_data, pulse_height_pavel_config['peak_config'])
-    heights = []
-    start_positions = []
     for key in input_data.dtype.names:
+        if len(peaks[key])==0:
+            return None, None
+        heights = []
+        start_positions = []
         for peak, left_ips in zip(peaks[key], peaks_prop[key]['left_ips']):
             start_position = find_rightmost_value_before_index(np.gradient(input_data[key]), int(left_ips), pulse_height_pavel_config['gradient_min_value'])
             if start_position != -1:
-                heights.append(input_data[key][peak] - input_data[key][start_position])
+                heights.append(int(input_data[key][peak] - input_data[key][start_position]))
                 start_positions.append(start_position)
+            else:
+                return None, None
         peaks_prop[key]['height'] = heights
         peaks_prop[key]['start'] = start_positions
+    
     return peaks, peaks_prop
         
 # <--- End Pulse height detection like Pavel

@@ -2,7 +2,7 @@ import tarfile
 import io
 import pyarrow.parquet as pq
 
-def process_parquet_files_from_tar(tar_path, work_on_struct_arr, number_of_files=None, start=0):
+def process_parquet_files_from_tar(tar_path, work_on_struct_arr, number_of_files=None, start=0,verbose=False):
     """
     Process Parquet files from a tar archive.
 
@@ -17,8 +17,9 @@ def process_parquet_files_from_tar(tar_path, work_on_struct_arr, number_of_files
     # Open the tar file
     with tarfile.open(tar_path, 'r') as tar:
         # Iterate over each member in the tar file
+        if number_of_files is None:
+            number_of_files=len(tar.getmembers())
         members=tar.getmembers()[start:number_of_files+start]
-        print(len(tar.getmembers()))
         for member in members:
             # Check if the member is a file
             if member.isfile() and member.name.endswith('.parquet'):
@@ -29,6 +30,7 @@ def process_parquet_files_from_tar(tar_path, work_on_struct_arr, number_of_files
                     with io.BytesIO(file_obj.read()) as buffer:
                         table = pq.read_table(buffer)
                         # Process the Parquet file (table)
-                        print(f"Processing {member.name}")
+                        if verbose:
+                            print(f"Processing {member.name}")
                         df=table.to_pandas()
                         work_on_struct_arr(df.to_records(index=False))
