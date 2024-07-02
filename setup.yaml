@@ -35,15 +35,15 @@ RingBuffer:
       data_type:
           1: ['ch1', "int16"]
           2: ['ch2', "int16"]
-#   - RB_3:
-#       # buffer with correct signature double pulse parameters
-#       number_of_slots: 100
-#       channel_per_slot: 1
-#       data_type:
-#       data_type:
-#           1: ['ch1_height', "int16"]
-#           2: ['ch2_height', "int16"]
-#           3: ['time_diff', "int16"]
+  - RB_3:
+      # buffer with correct signature double pulse parameters
+      number_of_slots: 100
+      channel_per_slot: 1
+      data_type:
+      data_type:
+          1: ['ch1_height', "int16"]
+          2: ['ch2_height', "int16"]
+          3: ['Delta_T', "int16"]
 
 
 
@@ -70,12 +70,19 @@ Functions:
 
 
   - Fkt_3:
-      file_name: "modules/exporters"
-      fkt_name: "save_parquet" # save data to parquet
-     # fkt_name: "drain"        # no saving of data
+      file_name: "modules/analyzer_client"
+      fkt_name: "analyzer" 
       num_process: 1
       RB_assign:
            RB_2: "read"
+           RB_3: "write"
+
+  - Fkt_4:
+      file_name: "modules/exporters"
+      fkt_name: "drain"
+      num_process: 1
+      RB_assign:
+            RB_3: "read"
 
 # --- the following functions are optioal 	   
 
