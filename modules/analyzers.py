@@ -45,8 +45,8 @@ def pulse_height_pavel(input_data, pulse_height_pavel_config):
     heights = []
     start_positions = []
     for key in input_data.dtype.names:
-        for peak, peak_prop in zip(peaks[key], peaks_prop[key]):
-            start_position = find_rightmost_value_before_index(np.gradient(input_data[key]), peak_prop['left_ips'], pulse_height_pavel_config['gradient_min_value'])
+        for peak, left_ips in zip(peaks[key], peaks_prop[key]['left_ips']):
+            start_position = find_rightmost_value_before_index(np.gradient(input_data[key]), int(left_ips), pulse_height_pavel_config['gradient_min_value'])
             if start_position != -1:
                 heights.append(input_data[key][peak] - input_data[key][start_position])
                 start_positions.append(start_position)

@@ -68,7 +68,7 @@ def analyzer(source_list=None, sink_list=None, observe_list=None, config_dict=No
         peak_data= np.zeros( (1,), dtype=pulse_par_dtype)
         peaks,peaks_prop = pulse_height_pavel(input_data, pulse_height_pavel_config)
         for key in input_data.dtype.names:
-            peak_data[0][key+'height'] = peaks_prop[key]['height']
+            peak_data[0][key+'_height'] = peaks_prop[key]['height'][0]
         # this considers 
         peak_data[0]['Delta_T'] =  peaks[list_of_channels[0]][0]-peaks[list_of_channels[1]][0]
         

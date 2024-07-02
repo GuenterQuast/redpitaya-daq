@@ -30,14 +30,20 @@ filter:
 analyzer:
   pulse_height_pavel_config:
     gradient_min_value: 0
+    peak_config:
+      prominence: 200
+      distance: 400
+      width: 10
+
   list_of_channels:
     - 'ch1'
     - 'ch2'
 
 
+
 # dict for 
 tar_parquet_source:
-  path: "measurements/coincidence/coincidence_small/spectrum.tar"
+  path: "measurements/coincidence/coincidence_small/"
   sleeptime: 0.10
   random: False
   number_of_samples: 1000

@@ -38,6 +38,7 @@ def tar_parquet_source(source_list=None, sink_list=None, observe_list=None,
     random = False if "random" not in config_dict \
         else config_dict["random"]
     number_of_samples = config_dict["number_of_samples"]
+    
 
     filenames = iter([os.path.join(path, f) for f in os.listdir(path) if \
                       os.path.isfile(os.path.join(path, f)) and \
@@ -76,18 +77,19 @@ def tar_parquet_source(source_list=None, sink_list=None, observe_list=None,
                 print("Could not open '" + str(parquet) + "' in '"+ str(f) + "'")
                 continue
           
+            
             # data from file is pandas format, convert to array
-            data = []
-            for i in range(number_of_channels):
-                chnam = 'ch' + chr(ord('A') + i)
-                data.append(pd_data[chnam].to_numpy())
+            data = pd_data.to_records(index=False)
+            print(data['ch1'])
             # deliver data and no metadata
             yield(data, None)                
 
             
     fs = rbImport(sink_list=sink_list, config_dict=config_dict,
                   ufunc = yield_data, **rb_info)
-    number_of_channels = len(fs.sink.dtype)
+    channel_names = []
+    for l in fs.sink.dtype: #fs.sink.dytpe is of format <class list> [('ch1', dtype('int16')), ('ch2', dtype('int16'))] 
+        channel_names.append(l[0])
 
     # TODO: Change to logger!
     # print("** tar_parquet_source ** started, config_dict: \n", config_dict)
