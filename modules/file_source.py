@@ -49,7 +49,7 @@ def tar_parquet_source(source_list=None, sink_list=None, observe_list=None,
         """
 
         f = next(filenames)
-        print("** file_source: opening file: ", f, 10*' ' + '\n')
+        #print("** file_source: opening file: ", f, 10*' ' + '\n')
         in_tar = tarfile.open(f, 'r:*') # open with transparent compression
 
         while True:   
@@ -69,10 +69,9 @@ def tar_parquet_source(source_list=None, sink_list=None, observe_list=None,
             if random: 
                 time.sleep(-sleeptime*np.log(np.random.rand())) # random Poisson sleep time
             else:
-                 time.sleep(sleeptime)  # fixed sleep time
+                time.sleep(sleeptime)  # fixed sleep time
             try:
                 pd_data = pd.read_parquet(in_tar.extractfile(parquet))
-                print(pd_data)
             except FileNotFoundError:
                 print("Could not open '" + str(parquet) + "' in '"+ str(f) + "'")
                 continue
