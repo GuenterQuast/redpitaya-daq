@@ -1,0 +1,13 @@
+NaI Vorverstärker 1.30 
+50 Ohm auf ch2
+
+Ge in Time Amplitude Amplifier
+Coarse Gain: 10
+Fine Gain: etwas über 1:30 Uhr
+Time Constant: 200
+Schalter auf Pos
+
+
+
+1604 Coincidence
+1618 erste 1000 trigger auf 1 zweite 1000 trigger auf 2
