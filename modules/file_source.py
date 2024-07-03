@@ -56,14 +56,15 @@ def tar_parquet_source(source_list=None, sink_list=None, observe_list=None,
             parquet = in_tar.next()
             if parquet is None:
                # open next file, if any
-               f = next(filenames)
-               if f is None:
-                   break
+               try: 
+                   f = next(filenames)
+               except StopIteration:  
+                   sys.exit()  # all files processed, exit
                # print("** file_source: opening file: ", f, 10*' ' + '\n')
                in_tar = tarfile.open(f, 'r:*') # open with transparent compression
                parquet = in_tar.next()
-               if parquet is None:
-                   break
+               if parquet is None:  # end of input data, exit
+                   sys.exit()
 
             # introduce random wait to mimic true data flow
             if random: 
