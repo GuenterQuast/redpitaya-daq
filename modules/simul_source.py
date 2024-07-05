@@ -1,5 +1,5 @@
-"""
-**simul_source**: a simple template for a mimoCoRB source to 
+""" **simul_source**: 
+a simple template for a mimoCoRB source to 
 enter simulated wave form data in a mimoCoRB buffer.
 
 Input data is provided as numpy-arry of shape (number_of_channels, number_of_samples).
@@ -43,12 +43,16 @@ def simul_source(source_list=None, sink_list=None, observe_list=None, config_dic
             yield (pulse, None)
             event_count += 1
 
+    # get configuration
+    sink_dict = sink_list[0]
+    number_of_channels = len(sink_dict["dtype"])
+    number_of_values = sink_dict["values_per_slot"]
+    if number_of_values != config_dict["number_of_samples"]:
+        print("! Config Error: requested number of samples does not match buffer size !")
+        sys.exit("requested number of samples does not match buffer size !")
     dataSource = pulseSimulator(config_dict)
     simulsource = rbImport(config_dict=config_dict, sink_list=sink_list, ufunc=yield_data, **rb_info)
-    number_of_channels = len(simulsource.sink.dtype)
     # possibly check consistency of provided dtype with simulation !
 
-    # TODO: Change to logger!
     # print("** simul_source ** started, config_dict: \n", config_dict)
-    # print("?> sample interval: {:02.1f}ns".format(osci.time_interval_ns.value))
     simulsource()
