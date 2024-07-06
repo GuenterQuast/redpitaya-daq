@@ -48,10 +48,15 @@ Functions:
       config_file: "config/spectrum_config.yaml"
 
   - Fkt_1:
-#       file_name: "redP_mimoCoRB"
-#       fkt_name: "redP_to_rb"
-       file_name: "modules/file_source"
-       fkt_name: "tar_parquet_source"
+    # data from RedPitaya
+       file_name: "redP_mimoCoRB"
+       fkt_name: "redP_to_rb"
+    # import from file   
+     #  file_name: "modules/file_source"
+     #  fkt_name: "tar_parquet_source"
+    # simulated data
+     #  file_name: "modules/simul_source"
+     #  fkt_name: "simulation_source"
        num_process: 1
        RB_assign:
            RB_1: "write"

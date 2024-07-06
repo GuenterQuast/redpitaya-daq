@@ -54,7 +54,7 @@ redP_to_rb:
   genStart: true # start pulse generator (for tests)
 
 # Dict for simul_source.py
-simul_source:
+simulation_source:
   sample_time_ns: *sample_time_ns
   number_of_samples: *number_of_samples
   pre_trigger_samples: *pre_trigger_samples

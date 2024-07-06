@@ -1,97 +1,65 @@
-"""
-**file_source**: Read waveform data from file
+""" **external_source**: 
+Template for data import in a mimoCoRB buffer from an external source
+
+Input data is provided as a numpy-arry of shape (number_of_channels, number_of_samples).
 """
 
 from mimocorb.buffer_control import rbImport
 import numpy as np
-import sys, os, time
+import sys, time
 
-import pandas as pd
-import pathlib
-import tarfile
+# ->> define input module here:
+from mimocorb.parquetReader import parquetReader
+dataSource = parquetReader
 
-def tar_parquet_source(source_list=None, sink_list=None, observe_list=None,
-                            config_dict=None, **rb_info):
+
+def tar_parquet_source(source_list=None, sink_list=None, observe_list=None, config_dict=None, **rb_info):
     """
-    Read real data from parquet in a tar file
-
-    The class mimocorb.buffer_control/rbImport is used to interface to the
+    General example for data import from external source  
+    (here: generation of simulated data with module parquetReader)
+    
+    Uses class mimocorb.buffer_control/rbImport to interface to the
     newBuffer and Writer classes of the package mimoCoRB.mimo_buffer
 
-    :param config_dict: configuration dictionary
-  
-      - path: (relative) path to source files in .tar, 
-      - sleeptime: (mean) time between events
-      - random: pick a random time between events according to a Poission process
-      - number_of_samples, sample_time_ns, pretrigger_samples and analogue_offset
-        describe the waveform data to be generated (as for oscilloscope setup) 
+    mimiCoRB interacts with this code via a generator (*yield_data()*), 
+    which itself received data via the *__call__* function of the class
+    *dataSource* providing the input data. Configuration parametes 
+    in the dictionary *config_dict* are passed to this class during
+    initialistation. Parameters of the configured buffers are set after 
+    after initialisation.
 
-    Internal parameters of the simulated physics process (the decay of a muon) 
-    are (presently) not exposed to user.         
+    This example may serve as a template for other data sources
     """
-    
-    # evaluate configuration dictionary
-    supported_suffixes = ['.tar', '.gz', '.tgz', '.bz2']
-    path = config_dict["path"]
-    sleeptime = 0.10 if "sleeptime" not in config_dict \
-        else config_dict["sleeptime"]
-    random = False if "random" not in config_dict \
-        else config_dict["random"]
-    number_of_samples = config_dict["number_of_samples"]
 
-    filenames = iter([os.path.join(path, f) for f in os.listdir(path) if \
-                      os.path.isfile(os.path.join(path, f)) and \
-                      pathlib.Path(f).suffix in supported_suffixes ])
+    # define and instantiate external data source
+    source = dataSource(config_dict)
 
     def yield_data():
-        """
-        Data generator to deliver raw pulse data from parquet files
-        """
+        """provide data from file, function called by instance of class mimoCoRB.rbImport"""
+        event_count = 0
+        while True:
+            data = source()
+            # deliver pulse data (and no metadata; these are added by rbImport)
+            yield (data, None)
+            event_count += 1
 
-        f = next(filenames)
-        #print("** file_source: opening file: ", f, 10*' ' + '\n')
-        in_tar = tarfile.open(f, 'r:*') # open with transparent compression
+    # get buffer configuration
+    sink_dict = sink_list[0]
+    number_of_channels = len(sink_dict["dtype"])
+    number_of_values = sink_dict["values_per_slot"]
+    channel_names = [sink_dict["dtype"][i][0] for i in range(number_of_channels)]
+    # consistency check
+    if "number_of_samples" not in config_dict:
+        pass
+    else: 
+        if number_of_values != config_dict["number_of_samples"]:
+            print("! Config Error: requested number of samples does not match buffer size !")
+            sys.exit("requested number of samples does not match buffer size !")
+    source.init(number_of_channels, number_of_values, channel_names)        
 
-        while True:   
-            parquet = in_tar.next()
-            if parquet is None:
-               # open next file, if any
-               try: 
-                   f = next(filenames)
-               except StopIteration:  
-                   sys.exit()  # all files processed, exit
-               # print("** file_source: opening file: ", f, 10*' ' + '\n')
-               in_tar = tarfile.open(f, 'r:*') # open with transparent compression
-               parquet = in_tar.next()
-               if parquet is None:  # end of input data, exit
-                   sys.exit()
+    # instantiate buffer manager interface
+    rbImporter = rbImport(config_dict=config_dict, sink_list=sink_list, ufunc=yield_data, **rb_info)
+    # print("** simulation_source ** started, config_dict: \n", config_dict)
 
-            # introduce random wait to mimic true data flow
-            if random: 
-                time.sleep(-sleeptime*np.log(np.random.rand())) # random Poisson sleep time
-            else:
-                time.sleep(sleeptime)  # fixed sleep time
-            try:
-                pd_data = pd.read_parquet(in_tar.extractfile(parquet))
-            except FileNotFoundError:
-                print("Could not open '" + str(parquet) + "' in '"+ str(f) + "'")
-                continue
-          
-            # data from file is pandas format, convert to array
-            data = []
-            for i in range(number_of_channels):
-                chnam = chnams[i]
-                data.append(pd_data[chnam].to_numpy())
-            # deliver data and no metadata
-            yield(data, None)                
-
-            
-    fs = rbImport(sink_list=sink_list, config_dict=config_dict,
-                  ufunc = yield_data, **rb_info)
-    number_of_channels = len(fs.sink.dtype)
-    chnams = [fs.sink.dtype[i][0] for i in range(number_of_channels)]
-
-    # TODO: Change to logger!
-    # print("** tar_parquet_source ** started, config_dict: \n", config_dict)
-    # print("?> sample interval: {:02.1f}ns".format(fs.time_interval_ns.value))
-    fs()
+    # start __call__ method of rbImport instance 
+    rbImporter()
