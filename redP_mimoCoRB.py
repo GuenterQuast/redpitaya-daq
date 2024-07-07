@@ -7,11 +7,11 @@ via callback of the __call__() function in class redP_mimoCoRB.
 
 This script depends on redPdaq.py and is started as a sup-process within the mimoCoRB
 framework. The detailed set-up of ring buffers and the associated funtions is specified
-in a configuration file, *setup.yaml*. The process suite is started by running this 
+in a configuration file, *<name>_setup.yaml*. The process suite is started by running this 
 script from the command line, possibly specifying the name of the configutation file
 as an argument.  
 
-As a demonstration, a configuration *setup.yaml* is contained in this package to 
+As a demonstration, a configuration *demo_setup.yaml* is contained in this package to 
 import waveforms from the RedPitaya, display a sub-set of the waveforms and perform
 a pulse-height analysis with updating results shown as histograms. 
 To run this example, connect the out1 of the RedPitaya to one or both of the inputs, 
@@ -83,7 +83,7 @@ if __name__ == "__main__":  # --------------------------------------
 
     # define command line arguments ...
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('filename', nargs='?', default = "setup.yaml",
+    parser.add_argument('filename', nargs='?', default = "demo_setup.yaml",
                     help = "configuration file")
     parser.add_argument('-v','--verbose', type=int, default=2,
                     help="verbosity level (2)")
