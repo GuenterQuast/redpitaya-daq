@@ -1058,6 +1058,62 @@ class OscDAQ(QWidget, Ui_OscDisplay):
         self.startButton.clicked.connect(self.stop)
         self.startDAQButton.setEnabled(False)
 
+    def save_config(self):
+        # Check for directory_prefix in config file
+        if 'directory_prefix' in self.rpControl.confd:
+            name = self.rpControl.confd['directory_prefix'] + 'redP_config.yaml'
+            if os.path.isfile(name):
+                print(f"This Error should never happen. \n It is a result of the newly created target directory {self.rpControl.confg['directory_prefix']} already containing a file called redP_config.yaml")
+        # Otherwise ask user for file name
+        else:
+            name, type = QFileDialog.getSaveFileName(self, 'Save File', 'redP_config.yaml', 'YAML files (*.yaml)')
+            if name == '': # dont save if user cancels
+                return 
+        
+        # Get configuration from rpControl
+        ip_address = self.rpControl.addrValue.text()
+        number_of_samples = self.rpControl.sample_size
+        pre_trigger_samples = int(self.rpControl.pretrigger_fraction*number_of_samples)
+        if self.trg_source: trigger_channel = 'ch2' 
+        else: trigger_channel = 'ch1'
+        trigger_level = self.trg_level
+        if self.trg_mode: trigger_mode = "auto" 
+        else: trigger_mode = "norm"
+        decimation_index = self.rpControl.rateValue.currentIndex()
+        invert_channel1 = self.rpControl.neg1Check.isChecked()
+        invert_channel2 = self.rpControl.neg2Check.isChecked()
+        startDAQ = self.rpControl.autostart
+        
+        genRate = self.rpControl.rateValue.currentText()
+        genPoisson = self.rpControl.gen_poissonButton
+        fallTime = self.rpControl.gen_fallValue
+        riseTime = self.rpControl.gen_riseValue
+        genStart = self.rpControl.gen_autostart
+        
+        # Write configuration to file
+        file = open(name, 'w')
+        file.write(f'''
+#Config of oscilloscope
+ip_address: {ip_address}
+number_of_samples: {number_of_samples}
+pre_trigger_samples:   {pre_trigger_samples}
+trigger_channel: {trigger_channel}
+trigger_level: {trigger_level}
+trigger_mode: {trigger_mode}
+decimation_index: {decimation_index}
+invert_channel1: {invert_channel1}
+invert_channel2: {invert_channel2}
+startDAQ: {startDAQ}
+
+#Generator Settings
+genRate: {genRate}
+# genPoisson: {genPoisson} Seems to be not working
+fallTime: {fallTime}
+riseTime: {riseTime}
+genStart: {genStart}
+''')
+        file.close()
+
     def start(self):
         """start oscilloscope display
         """
@@ -1088,6 +1144,7 @@ class OscDAQ(QWidget, Ui_OscDisplay):
         self.dT = 0.
         # set-up trigger and GUI Buttons
         self.setup_trigger()
+        self.save_config()
         self.set_gui4stop()
         # disable spectrum update
         if self.rpControl.hst1 is not None:
