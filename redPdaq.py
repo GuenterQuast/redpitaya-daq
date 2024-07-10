@@ -131,6 +131,7 @@ class rpControl(QMainWindow, Ui_RPCONTROL):
         # set-up and show main window
         self.setupUi(self)
         # initialize variables
+        self.IOconnected = False
         self.idle = True
         self.hst_waiting = [False for i in range(2)]
         self.osc_ready = False
@@ -141,9 +142,11 @@ class rpControl(QMainWindow, Ui_RPCONTROL):
         self.timers = self.status[:4].view(np.uint64)
         # create tabs
         self.log = LogDisplay()
-        if self.interactive:
+        if self.interactive: # histogram function with disabled start button
             self.hst1 = HstDisplay(self, self.log, 0)
+            self.hst1.startButton.setEnabled(False)
             self.hst2 = HstDisplay(self, self.log, 1)
+            self.hst2.startButton.setEnabled(False)
         else:
             # no spectrum
             self.hst1 = None
@@ -153,6 +156,8 @@ class rpControl(QMainWindow, Ui_RPCONTROL):
             self.setGeometry(0, 0, 800, 650)
             self.log.print("runnning in DAQ mode")
         self.osc_daq = OscDAQ(self, self.log)        
+        self.osc_daq.startButton.setEnabled(False)
+        self.osc_daq.startDAQButton.setEnabled(False)
         self.gen = GenDisplay(self, self.log)
         self.tabindex_log = self.tabWidget.addTab(self.log, "Messages")
         self.tabWidget.addTab(self.hst1, "Spectrum Channel 1")
@@ -181,7 +186,7 @@ class rpControl(QMainWindow, Ui_RPCONTROL):
         self.loop = QEventLoop()
         self.socket.readyRead.connect(self.loop.quit)
         self.socket.error.connect(self.loop.quit)
-        # create timers 
+        # create timers
         self.startTimer = QTimer(self)  # timer for network connectin
         self.startTimer.timeout.connect(self.start_timeout)
         self.readTimer = QTimer(self)   # for readout 
@@ -230,7 +235,6 @@ class rpControl(QMainWindow, Ui_RPCONTROL):
         self.filename = ''  # file name for data export, '' means disable
         self.autostart = False if "startDAQ" not in self.confd \
             else self.confd["startDAQ"]
-        print("autostart", self.autostart)
 
         # generator defaults
         self.gen_rateValue = 2000 if "genRate" not in self.confd \
@@ -265,7 +269,7 @@ class rpControl(QMainWindow, Ui_RPCONTROL):
         parser.add_argument('-p', '--pretrigger_fraction', type=float,
                             default=self.pretrigger_fraction, help='pretrigger fraction')
         parser.add_argument('-f', '--file', type=str, default='',
-                            help='file name')        
+                            help='file name')
         args = parser.parse_args()
         # all relevant parameters are here
         self.ip_address = args.connect_ip
@@ -294,7 +298,7 @@ class rpControl(QMainWindow, Ui_RPCONTROL):
         
     def startIO(self):
         self.socket.connectToHost(self.addrValue.text(), 1001) # connect to port 1001 (mcpha_server on RP) 
-        self.startTimer.start(1000) # shorter time-out
+        self.startTimer.start(1000) # connection time-out
         self.connectButton.setText("Disconnect")
         self.connectButton.clicked.disconnect()
         self.connectButton.clicked.connect(self.stop)
@@ -326,10 +330,19 @@ class rpControl(QMainWindow, Ui_RPCONTROL):
 
     def connected(self):
         # coming here when connection is established
-        self.startTimer.stop()
+        self.startTimer.stop()  # stop time-out
+        self.IOconnected = True
         self.log.print("IO started")
         self.addrValue.setStyleSheet("color: green")
         self.tabWidget.setCurrentIndex(self.tabindex_osc)
+        # enable all start buttons
+        if self.hst1 is not None:
+            self.hst1.startButton.setEnabled(True)
+        if self.hst2 is not None:
+            self.hst2.startButton.setEnabled(True)
+        self.osc_daq.startButton.setEnabled(True)
+        self.osc_daq.startDAQButton.setEnabled(True)
+
         # initialize variables for readout
         self.idle = False
         self.osc_waiting = False
@@ -1044,11 +1057,12 @@ class OscDAQ(QWidget, Ui_OscDisplay):
         self.startButton.setStyleSheet("")
         self.startButton.clicked.disconnect()
         self.startButton.clicked.connect(self.start)
-        self.startDAQButton.setEnabled(True)
-        if self.rpControl.hst1 is not None:
-            self.rpControl.hst1.startButton.setEnabled(True)
-        if self.rpControl.hst2 is not None:
-            self.rpControl.hst2.startButton.setEnabled(True)
+        if self.rpControl.IOconnected:
+            self.startDAQButton.setEnabled(True)
+            if self.rpControl.hst1 is not None:
+                self.rpControl.hst1.startButton.setEnabled(True)
+            if self.rpControl.hst2 is not None:
+                self.rpControl.hst2.startButton.setEnabled(True)
 
     def set_gui4stop(self):
         # set start and stop buttons
