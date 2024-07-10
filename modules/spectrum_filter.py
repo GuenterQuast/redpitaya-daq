@@ -23,8 +23,8 @@ and *calculate_decay_time:* in the configuration file.
 
 from mimocorb.buffer_control import rbTransfer
 import numpy as np
-import pandas as pd
-import os, sys
+import os
+import sys
 
 from filters import *
 

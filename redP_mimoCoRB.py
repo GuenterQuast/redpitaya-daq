@@ -49,10 +49,10 @@ class redP_mimocorb():
         """
         if (self.events_required == 0 or self.event_count < self.events_required) and self.active:
              # deliver pulse data and no metadata
-             active = self.rb_exporter(data, None) # send data
+             self.active = self.rb_exporter(data, None) # send data
              self.event_count += 1
         else:
-             active = self.rb_exporter(None, None) # send None when done
+             self.active = self.rb_exporter(None, None) # send None when done
              print("redPoscdaq exiting") 
              sys.exit()
            
@@ -78,7 +78,8 @@ if __name__ == "__main__":  # --------------------------------------
 #run mimoCoRB data acquisition suite
   # the code below is idenical to the mimoCoRB script run_daq.py
     import argparse
-    import sys, time
+    import sys
+    import time
     from mimocorb.buffer_control import run_mimoDAQ
 
     # define command line arguments ...

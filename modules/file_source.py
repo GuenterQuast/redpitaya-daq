@@ -5,8 +5,7 @@ Input data is provided as a numpy-arry of shape (number_of_channels, number_of_s
 """
 
 from mimocorb.buffer_control import rbImport
-import numpy as np
-import sys, time
+import sys
 
 # ->> define input module here:
 from mimocorb.parquetReader import parquetReader

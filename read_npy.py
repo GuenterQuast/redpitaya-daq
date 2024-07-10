@@ -2,7 +2,6 @@
 """read file from redPoscdaq (in npy format) and display data
 """
 
-from npy_append_array import NpyAppendArray
 import numpy as np
 import sys
 import matplotlib.pyplot as plt

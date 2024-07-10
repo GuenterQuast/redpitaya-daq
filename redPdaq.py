@@ -49,7 +49,6 @@ from functools import partial
 import numpy as np
 import matplotlib
 from matplotlib.figure import Figure
-from multiprocessing import Event
 
 # !!! for conditional import from npy_append_array !!!
 def import_npy_append_array():
@@ -58,6 +57,7 @@ def import_npy_append_array():
 
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT as NavigationToolbar
+import matplotlib.pyplot as plt 
 
 if "PyQt5" in sys.modules:
     from PyQt5.uic import loadUiType
@@ -75,7 +75,6 @@ else:
     from PySide2.QtNetwork import QAbstractSocket, QTcpSocket
 
 # define global graphics style
-import matplotlib.pyplot as plt 
 pref_style = "default"
 _style = pref_style if pref_style in plt.style.available else "default"
 plt.style.use(_style)
@@ -901,7 +900,8 @@ class HstDisplay(QWidget, Ui_HstDisplay):
                            header ='mcpha spectrum ' + timestamp + '\n counts per channel',
                            newline=os.linesep)
                 self.log.print("histogram %d saved to file %s" % ((self.number + 1), name[0]))
-        except:
+        except Exception as e:
+            print(f"Exception: {e}")
             self.log.print("error: %s" % sys.exc_info()[1])
 
     def load(self):
@@ -913,7 +913,8 @@ class HstDisplay(QWidget, Ui_HstDisplay):
                 name = dialog.selectedFiles()
                 self.buffer[:] = np.loadtxt(name[0], np.uint32)
                 self.update_plot()
-        except:
+        except Exception as e:
+            print(f"Exception: {e}")
             self.log.print("error: %s" % sys.exc_info()[1])
         
 
@@ -1127,7 +1128,7 @@ class OscDAQ(QWidget, Ui_OscDisplay):
         dt = t - self.Tprev
         self.Tprev = t
         self.dT += dt
-        dead_time_fraction = self.deadT/dt
+        # dead_time_fraction = self.deadT/dt
         self.deadT = 0.
         #
         # do something with data (e.g. pass to sub-process via mpQueue)
@@ -1190,7 +1191,8 @@ class OscDAQ(QWidget, Ui_OscDisplay):
                 name = dialog.selectedFiles()
                 self.buffer.tofile(name[0])
                 self.log.print("histogram %d saved to file %s" % ((self.number + 1), name[0]))
-        except:
+        except Exception as e:
+            print(f"Exception: {e}")
             self.log.print("error: %s" % sys.exc_info()[1])
 
     def load(self):
@@ -1202,7 +1204,8 @@ class OscDAQ(QWidget, Ui_OscDisplay):
                 name = dialog.selectedFiles()
                 self.buffer[:] = np.fromfile(name[0], np.int16)
                 self.update()
-        except:
+        except Exception as e:
+            print(f"Exception: {e}")
             self.log.print("error: %s" % sys.exc_info()[1])
 
                                    
@@ -1323,7 +1326,8 @@ class GenDisplay(QWidget, Ui_GenDisplay):
                 self.ax.relim()
                 self.ax.autoscale_view(scalex=False, scaley=True)
                 self.canvas.draw()
-        except:
+        except Exception as e:
+            print(f"Exception: {e}")
             self.log.print("error: %s" % sys.exc_info()[1])
 
 class redP_consumer():            
