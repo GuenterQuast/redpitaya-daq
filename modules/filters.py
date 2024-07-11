@@ -1,4 +1,3 @@
-from mimocorb import mimo_buffer as bm
 from scipy import signal
 import numpy as np
 from numpy.lib import recfunctions as rfn

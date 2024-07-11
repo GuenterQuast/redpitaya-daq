@@ -1,14 +1,13 @@
 """
-**simul_source**: a simple template for a mimoCoRB source to 
+**simul_source**: a simple template for a mimoCoRB source to
 enter simulated wave form data in a mimoCoRB buffer.
 
 Input data is provided as numpy-arry of shape (number_of_channels, number_of_samples).
 """
 
 from mimocorb.buffer_control import rbImport
-import numpy as np
-import sys, time
 from pulseSimulator import pulseSimulator
+
 
 def simul_source(source_list=None, sink_list=None, observe_list=None, config_dict=None, **rb_info):
     """
