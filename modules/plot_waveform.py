@@ -1,5 +1,5 @@
 """
-**plot**: plotting waveforms from buffer using mimoCoRB.buffer_control.OberserverData 
+**plot**: plotting waveforms from buffer using mimoCoRB.buffer_control.OberserverData
 """
 
 import sys
