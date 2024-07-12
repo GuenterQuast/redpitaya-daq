@@ -45,6 +45,7 @@ import sys
 import time
 import struct
 from pathlib import Path
+import yaml
 
 from functools import partial
 import numpy as np
@@ -1074,67 +1075,48 @@ class OscDAQ(QWidget, Ui_OscDisplay):
         self.startButton.clicked.connect(self.stop)
         self.startDAQButton.setEnabled(False)
 
+    def get_actual_config(self):
+        """update configuration dictionary with actual values from GUI
+        """
+        cd = {}
+        cd["ip_address"]  = self.rpControl.addrValue.text()
+        cd["number_of_samples"] = self.rpControl.sample_size
+        cd["pre_trigger_samples"] = int(self.rpControl.pretrigger_fraction * self.rpControl.sample_size)
+        cd["decimation_index"] = self.rpControl.rateValue.currentIndex()
+        cd["invert_channel1"] = self.rpControl.neg1Check.isChecked()
+        cd["invert_channel2"] = self.rpControl.neg2Check.isChecked()
+        # actual trigger settings
+        cd["trigger_mode"] = "auto" if self.trg_mode else "norm"        
+        cd["trigger_channel"] = "2" if self.ch2Button.isChecked() else "1"
+        cd["trigger_level"] = self.levelValue.value()
+        cd["trigger_direction"] = "falling" if self.fallingButton.isChecked() else "rising"
+        # generator defaults
+        cd["genRate"] = self.rpControl.gen.rateValue.value()        
+        cd["genPoisson"] = self.rpControl.gen.poissonButton.isChecked()
+        cd["fallTime"] = self.rpControl.gen.fallValue.value()
+        cd["riseTime"] = self.rpControl.gen.riseValue.value()
+        return cd
+
+        
     def save_config(self):
         """save configuration dictionary"""
         # check if directory prefix is in config file
         if "directory_prefix" in self.rpControl.confd:
-            name = self.rpControl.confd["directory_prefix"] + "redP_config.yaml"
-            if os.path.isfile(name):
+            fname = self.rpControl.confd["directory_prefix"] + "redP_config.yaml"
+            if os.path.isfile(fname):
                 print(f"file {self.rpControl.confg['directory_prefix']} already existing")
             # Otherwise ask user for file name
         else:
             if self.filename is not None:
                 p = Path(self.filename)
                 nam = str(p.parent) + "/redP_config.yaml"
-                name, type = QFileDialog.getSaveFileName(self, "Save File", nam, "YAML files (*.yaml)")
-                if name == "":  # dont save if user cancels
+                fname, type = QFileDialog.getSaveFileName(self, "Save File", nam, "YAML files (*.yaml)")
+                if fname == "":  # dont save if user cancels
                     return
-
-        # Get configuration from rpControl
-        ip_address = self.rpControl.addrValue.text()
-        number_of_samples = self.rpControl.sample_size
-        pre_trigger_samples = int(self.rpControl.pretrigger_fraction * number_of_samples)
-        if self.trg_source:
-            trigger_channel = "ch2"
-        else:
-            trigger_channel = "ch1"
-        trigger_level = self.trg_level
-        if self.trg_mode:
-            trigger_mode = "auto"
-        else:
-            trigger_mode = "norm"
-        decimation_index = self.rpControl.rateValue.currentIndex()
-        invert_channel1 = self.rpControl.neg1Check.isChecked()
-        invert_channel2 = self.rpControl.neg2Check.isChecked()
-        startDAQ = self.rpControl.autostart
-        genRate = self.rpControl.gen_rateValue
-        genPoisson = self.rpControl.gen.poissonButton.isChecked()
-        fallTime = self.rpControl.gen_fallValue
-        riseTime = self.rpControl.gen_riseValue
-        genStart = self.rpControl.gen_autostart
-
-        # Write configuration to file
-        file = open(name, "w")
-        file.write(f"""
-#Config of oscilloscope
-ip_address: {ip_address}
-number_of_samples: {number_of_samples}
-pre_trigger_samples:   {pre_trigger_samples}
-trigger_channel: {trigger_channel}s
-trigger_level: {trigger_level}
-trigger_mode: {trigger_mode}
-decimation_index: {decimation_index}
-invert_channel1: {invert_channel1}
-invert_channel2: {invert_channel2}
-startDAQ: {startDAQ}
-#Generator Settings
-genRate: {genRate}
-genPoisson: {genPoisson}
-fallTime: {fallTime}
-riseTime: {riseTime}
-genStart: {genStart}""")
-        file.close()
-
+        cd = self.get_actual_config()
+        with open(fname, 'w') as f:
+            f.write(yaml.dump(cd))
+         
     def start(self):
         """start oscilloscope display"""
         if self.rpControl.idle:
