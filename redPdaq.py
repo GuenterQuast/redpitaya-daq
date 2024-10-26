@@ -18,26 +18,40 @@ script_name = "redPdaq.py"
 # Communication with server process is achieved via command codes:
 #   command(code, number, data)  #    number typically is channel number
 #
-# code values
-# code  2:  reset/initialze oscilloscope
-# code  4:  set decimation factor
-# code 11:  read status
-# code 13:  set trigger source chan 1/2
-# code 14:  set trigger slope rise/fall
-# code 15:  set trigger mode norm/autoUi_HstDisplay, QWidget = loadUiType("mcpha_hst.ui")
-# code 16:  set trigger level in ADC counts
-# code 17:  set number of pre-trigger samples
-# code 18:  set number of total samples
-# code 19:  start oscilloscope
-# code 20:  read oscilloscope data (two channels at once)
-# code 21:  set pulse fall-time for generator in µs
-# code 22:  set pulse rise-time in ns
-# code 25:  set pulse rate in kHz
-# code 26:  fixed frequency or poisson
-# code 27_  reset generator
-# code 28:  set bin for pulse distribution, as a histogram with 4096 channels, 0-500 mV
-# code 29:  start generator
-# code 30:  stop generator
+COMMANDS = {
+    0: "reset histogram",
+    1: "reset timer",
+    2: "reset/initialize oscilloscope",
+    3: "reset generator",
+    4: "set sample rate",
+    5: "set negator mode (0 for disabled, 1 for enabled)",
+    6: "set pha delay",
+    7: "set pha threshold min",
+    8: "set pha threshold max",
+    9: "set timer",
+    10: "set timer mode (0 for stop, 1 for running)",
+    11: "read status",
+    12: "read histogram",
+    13: "set trigger source (0 for channel 1, 1 for channel 2)",
+    14: "set trigger slope (0 for rising, 1 for falling)",
+    15: "set trigger mode (0 for normal, 1 for auto)",
+    16: "set trigger level",
+    17: "set number of samples before trigger",
+    18: "set total number of samples",
+    19: "start oscilloscope",
+    20: "read oscilloscope data",
+    21: "set fall time",
+    22: "set rise time",
+    23: "set lower limit",
+    24: "set upper limit",
+    25: "set rate",
+    26: "set probability distribution",
+    27: "reset spectrum",
+    28: "set spectrum bin",
+    29: "start generator",
+    30: "stop generator",
+    ####    31: "start daq"   # only with KA image
+}
 
 import argparse
 import os
@@ -1076,28 +1090,26 @@ class OscDAQ(QWidget, Ui_OscDisplay):
         self.startDAQButton.setEnabled(False)
 
     def get_actual_config(self):
-        """update configuration dictionary with actual values from GUI
-        """
+        """update configuration dictionary with actual values from GUI"""
         cd = {}
-        cd["ip_address"]  = self.rpControl.addrValue.text()
+        cd["ip_address"] = self.rpControl.addrValue.text()
         cd["number_of_samples"] = self.rpControl.sample_size
         cd["pre_trigger_samples"] = int(self.rpControl.pretrigger_fraction * self.rpControl.sample_size)
         cd["decimation_index"] = self.rpControl.rateValue.currentIndex()
         cd["invert_channel1"] = self.rpControl.neg1Check.isChecked()
         cd["invert_channel2"] = self.rpControl.neg2Check.isChecked()
         # actual trigger settings
-        cd["trigger_mode"] = "auto" if self.trg_mode else "norm"        
+        cd["trigger_mode"] = "auto" if self.trg_mode else "norm"
         cd["trigger_channel"] = "2" if self.ch2Button.isChecked() else "1"
         cd["trigger_level"] = self.levelValue.value()
         cd["trigger_direction"] = "falling" if self.fallingButton.isChecked() else "rising"
         # generator defaults
-        cd["genRate"] = self.rpControl.gen.rateValue.value()        
+        cd["genRate"] = self.rpControl.gen.rateValue.value()
         cd["genPoisson"] = self.rpControl.gen.poissonButton.isChecked()
         cd["fallTime"] = self.rpControl.gen.fallValue.value()
         cd["riseTime"] = self.rpControl.gen.riseValue.value()
         return cd
 
-        
     def save_config(self):
         """save configuration dictionary"""
         # check if directory prefix is in config file
@@ -1118,7 +1130,7 @@ class OscDAQ(QWidget, Ui_OscDisplay):
             cd = self.get_actual_config()
             with open(fname, 'w') as f:
                 f.write(yaml.dump(cd))
-         
+
     def start(self):
         """start oscilloscope display"""
         if self.rpControl.idle:
