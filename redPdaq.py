@@ -1101,6 +1101,7 @@ class OscDAQ(QWidget, Ui_OscDisplay):
     def save_config(self):
         """save configuration dictionary"""
         # check if directory prefix is in config file
+        fname = None
         if "directory_prefix" in self.rpControl.confd:
             fname = self.rpControl.confd["directory_prefix"] + "redP_config.yaml"
             if os.path.isfile(fname):
@@ -1112,10 +1113,11 @@ class OscDAQ(QWidget, Ui_OscDisplay):
                 nam = str(p.parent) + "/redP_config.yaml"
                 fname, type = QFileDialog.getSaveFileName(self, "Save File", nam, "YAML files (*.yaml)")
                 if fname == "":  # dont save if user cancels
-                    return
-        cd = self.get_actual_config()
-        with open(fname, 'w') as f:
-            f.write(yaml.dump(cd))
+                    fname = None
+        if fname is not None:
+            cd = self.get_actual_config()
+            with open(fname, 'w') as f:
+                f.write(yaml.dump(cd))
          
     def start(self):
         """start oscilloscope display"""
