@@ -13,6 +13,45 @@ This code is compatible with release 20240204 of the alpine linux image
 https://github.com/pavel-demin/red-pitaya-notes/releases/tag/20240204
 """
 
+import argparse
+import os
+import sys
+import time
+import struct
+from pathlib import Path
+import yaml
+
+from functools import partial
+import numpy as np
+import matplotlib
+from matplotlib.figure import Figure
+from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
+from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT as NavigationToolbar
+import matplotlib.pyplot as plt
+
+
+# !!! for conditional import from npy_append_array !!!
+def import_npy_append_array():
+    global NpyAppendArray
+    from npy_append_array import NpyAppendArray
+
+
+if "PyQt5" in sys.modules:
+    from PyQt5.uic import loadUiType
+    from PyQt5.QtCore import Qt, QTimer, QEventLoop, QRegExp
+    from PyQt5.QtGui import QPalette, QColor, QRegExpValidator
+    from PyQt5.QtWidgets import QApplication, QMainWindow, QDialog, QFileDialog
+    from PyQt5.QtWidgets import QWidget, QLabel, QCheckBox, QComboBox
+    from PyQt5.QtNetwork import QAbstractSocket, QTcpSocket
+else:
+    from PySide2.QtUiTools import loadUiType
+    from PySide2.QtCore import Qt, QTimer, QEventLoop, QRegExp
+    from PySide2.QtGui import QPalette, QColor, QRegExpValidator
+    from PySide2.QtWidgets import QApplication, QMainWindow, QDialog, QFileDialog
+    from PySide2.QtWidgets import QWidget, QLabel, QCheckBox, QComboBox
+    from PySide2.QtNetwork import QAbstractSocket, QTcpSocket
+
+
 script_name = "redPdaq.py"
 
 # Communication with server process is achieved via command codes:
@@ -52,45 +91,6 @@ COMMANDS = {
     30: "stop generator",
     ####    31: "start daq"   # only with KA image
 }
-
-import argparse
-import os
-import sys
-import time
-import struct
-from pathlib import Path
-import yaml
-
-from functools import partial
-import numpy as np
-import matplotlib
-from matplotlib.figure import Figure
-
-
-# !!! for conditional import from npy_append_array !!!
-def import_npy_append_array():
-    global NpyAppendArray
-    from npy_append_array import NpyAppendArray
-
-
-from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
-from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT as NavigationToolbar
-import matplotlib.pyplot as plt
-
-if "PyQt5" in sys.modules:
-    from PyQt5.uic import loadUiType
-    from PyQt5.QtCore import Qt, QTimer, QEventLoop, QRegExp
-    from PyQt5.QtGui import QPalette, QColor, QRegExpValidator
-    from PyQt5.QtWidgets import QApplication, QMainWindow, QDialog, QFileDialog
-    from PyQt5.QtWidgets import QWidget, QLabel, QCheckBox, QComboBox
-    from PyQt5.QtNetwork import QAbstractSocket, QTcpSocket
-else:
-    from PySide2.QtUiTools import loadUiType
-    from PySide2.QtCore import Qt, QTimer, QEventLoop, QRegExp
-    from PySide2.QtGui import QPalette, QColor, QRegExpValidator
-    from PySide2.QtWidgets import QApplication, QMainWindow, QDialog, QFileDialog
-    from PySide2.QtWidgets import QWidget, QLabel, QCheckBox, QComboBox
-    from PySide2.QtNetwork import QAbstractSocket, QTcpSocket
 
 # define global graphics style
 pref_style = "default"
