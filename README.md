@@ -148,7 +148,7 @@ A *mimoCoRB* setup-file is also provided and can be started by typing
 files for a pulse-height analysis of recorded signals are contained as exampless
 in the sub-directories *modules/* and *config/*, respectively. The relevant modules are
 
-  - *redP_momocorb.py*, function *redP_to_rb()* # code to run redPdaq.py as a mimoCoRB client  
+  - *redP_mimocorb.py*, function *redP_to_rb()* # code to run redPdaq.py as a mimoCoRB client  
   - *modules/spectrum_filter.py*    # code to determine pulse height (depends on *filters.py*)
   - *modules/redPitaya_source.py*   # a simulator for data input 
 
